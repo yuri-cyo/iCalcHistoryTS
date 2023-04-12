@@ -28,6 +28,7 @@ blockquote,
 dl,
 dd {
 	margin: 0;
+	box-sizing: border-box;
 }
 
 // color button
@@ -44,11 +45,14 @@ $btn-numbers-click: #737373;
 $btn-control-hover: #D9D9D9;
 $btn-math-hover: #FBC78E;
 $btn-math-click: #fff;
+
+$applicationScale: 50; //!<================== SCALE %
 //font
-$fs-control-button: 60px;
-$fs-number-button: 70px;
-$fs-math-button: 85px;
-$fs-digit: 175px;
+$fs-control-button: calc(60px / 100 * $applicationScale) ;
+$fs-number-button: calc(70px / 100 * $applicationScale) ;
+$fs-math-button: calc(85px / 100 * $applicationScale) ;
+$fs-digit: calc(175px / 100 * $applicationScale);
+$maxWidthCalc: 706px;
 
 $fw-control-button: 500;
 $fw-control-button-percent: calc($fw-control-button * 1.16);
@@ -56,14 +60,15 @@ $fw-number-button: 400;
 $fw-math-button: 400;
 $fw-digit: 300;
 
-$lh-control-button: 144px;
 // size
-$calc-h: 1280px;
-$calc-w: 720px;
-$sz-button: 144px;
-$gap: 26px;
-$screen-h: 422px;
-$screen-padding: 35px 18px;
+$calc-h: calc(1280px / 100 * $applicationScale);
+$calc-w: calc(720px / 100 * $applicationScale);
+$sz-button: calc(144px / 100 * $applicationScale);
+$lh-control-button: calc(144px / 100 * $applicationScale);
+$gap: calc(26px / 100 * $applicationScale);
+$screen-h: calc(390px / 100 * $applicationScale); // 422px
+$screen-w: calc(654px / 100 * $applicationScale); // 422px
+$screen-padding: calc(35px / 100 * $applicationScale) calc(18px / 100 * $applicationScale);
 // animation
 $transition-btn: .7s;
 
@@ -73,15 +78,16 @@ body {
 	font-family: 'Montserrat';
 	font-weight: 400;
 	// width: 100%;
-	// height: 100px;
+	// min-width: 100vw;
+	// height: 102vh;
+	background: #000000;
+	// @media (max-width: em(355)) {
+		
+	// 	min-width: 340px;
+		
+	// }	
 }
 
-@media (max-height: 450px) {
-	body {
-		min-width: 450px;
-		min-height: 100vh;
-	}
-}	
 
 
 header {
@@ -89,14 +95,15 @@ header {
 }
 
 .container {
-	margin: 0 auto;
 	width: 100%;
+	// width: 100vw;
 	height: 100vh;
 	background: $bg;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	align-content: center;
+	// align-items: end;
+	// align-content: center;
 
 	@media (max-width: em(425)){
 		background: #000000;
@@ -109,23 +116,25 @@ header {
 	border-radius: calc(($sz-button) / 2);
 	box-shadow: 3px 3px 50px 3px rgba(255, 255, 255, 0.2);
 	padding: $gap;
-	transform: scale(.5);
 	// max-height: 100vh;
-	@media (max-width: em(425)){
-		// box-shadow: none
-	}
+	@media (max-width: em(425)) {
+		// box-shadow:none
+		// height: 100vh;
+	}	
 
 	&__screen {
-		height: $screen-h;
+		min-height: $screen-h;
 		width: 100%;
+		max-width: $screen-w;
 		display: flex;
 		justify-content: flex-end;
 		padding: $screen-padding;
 		align-items: flex-end;
 
-			p {
+			p { //* циферблат
 				font-size: $fs-digit;
 				font-weight: $fw-digit;
+				// max-width: 100%;
 			}
 	}
 }
@@ -144,7 +153,7 @@ header {
 	// font-size: $fs-control-button;
 	// font-weight: 400;
 	
-	// что бы текст не выделялся
+	// щоб текст не виділявся!
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
@@ -156,7 +165,6 @@ header {
 		transition: $transition-btn ease;
 		font-size: $fs-control-button;
 		font-weight: $fw-control-button;
-		
 	
 		&:hover {
 			background-color: $btn-control-hover;
@@ -174,7 +182,6 @@ header {
 		transition: $transition-btn ease;
 		font-size: $fs-number-button;
 		font-weight: $fw-number-button;
-		
 	
 		&:hover {
 			background-color: $btn-numbers-click;
@@ -193,8 +200,6 @@ header {
 		// font-size: calc($fs-control-button * 1.6);
 		font-size: $fs-math-button;
 		font-weight: $fw-math-button;
-		
-		
 	
 		&:hover {
 			background-color: $btn-math-hover;

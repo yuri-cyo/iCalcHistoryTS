@@ -24,6 +24,10 @@ export class Calc {
 
 	}
 
+  digitStyle() {
+    
+  }
+
   buttonACContent() {
     if (this.numA !== '' || this.numB !== '') {
       this.$buttonAC.innerHTML = 'C'
