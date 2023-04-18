@@ -19,7 +19,8 @@
             this.$el = document.querySelector(`#${selector}`);
             this.$digit = document.querySelector("[data-digit]");
             this.numberLimit = options.numberLimit;
-            this.varDigitStr = "";
+            //! this.roundingAfterDot() - Повертає розраховану кількість чисел після коми!!!
+                        this.varDigitStr = "";
             this.$buttonAC = document.querySelector("[data-clear]");
             this.$buttonsMath = document.querySelectorAll("[data-math]");
             this.negativeCount = 1;
@@ -138,7 +139,6 @@
                 if (1 === x && "+" === modifier) this.numA += value;
                 this.varDigitStr = this.numA;
                 this.fixDots();
-                this.removeLastDot();
                 this.returnAorB = this.numA;
                 break;
 
@@ -167,7 +167,6 @@
             this.varDigitStr = this.varDigitStr.replace(/-[^.\d]+/g, "").replace(/^([^\.]*\.)|\./g, "$1");
             if ("." === this.lastIndex(this.varDigitStr) && this.arrOperations.includes(this.targetDataSet.math)) this.varDigitStr = this.varDigitStr.replace(/\.$/d, "");
         }
-        removeLastDot() {}
         buttonNegative() {
             if ("-" === this.lastIndex(this.numAB())) this.AorB(this.numAB().replace(/-$/g, "").replace(/^/g, "-"), "=");
             if ("-" === this.numAB()) this.AorB(this.numAB().replace(/$/g, "0"), "=");
@@ -238,6 +237,12 @@
                 break;
             }
         }
+        limitResultAB() {
+            if (this.varDigitStr.toString().length > this.numberLimit) {
+                this.varDigitStr = Number(this.varDigitStr).toExponential(this.roundingAfterDot());
+                this.isExponential = true;
+            } else this.isExponential = false;
+        }
         foFixedNumFloat() {
             let intDigitLength = parseInt(this.varDigitStr) + "";
             intDigitLength = intDigitLength.length;
@@ -249,7 +254,7 @@
             return this.resultAB = this.fnToFixed(this.resultAB);
         }
         fnToFixed(num) {
-            num = parseFloat(num).toFixed(6).replace(/0+$/g, "").replace(/\.$/g, "");
+            num = parseFloat(num).toFixed(this.roundingAfterDot()).replace(/0+$/g, "").replace(/\.$/g, "");
             return num;
         }
         fixDotWithoutZero() {
@@ -264,17 +269,32 @@
                 this.returnAorB = "0.";
             }
         }
-        limitNumbers() {
-            if (this.numA.length > this.numberLimit) if (this.numA.includes(".")) if ("." === this.numA[this.numA.length - 1]) return; else this.numA = this.numA.slice(0, this.numberLimit + 1); else this.numA = this.numA.slice(0, this.numberLimit);
-            if (this.numB.length > this.numberLimit) if (this.numB.length === this.numberLimit && this.numB.includes(".")) if ("." === this.numB[this.numB.length - 1]) this.numB = this.numB.slice(0, this.numberLimit); else this.numB = this.numB.slice(0, this.numberLimit + 1); else this.numB = this.numB.slice(0, this.numberLimit);
+        roundingAfterDot() {
+            let returnRound = this.numberLimit - Math.floor(this.varDigitStr).toString().length;
+            if (returnRound <= 0) returnRound = 1;
+            return returnRound;
         }
         digitRender() {
             const options = {
-                maximumFractionDigits: 10,
+                maximumFractionDigits: 20,
                 minimumFractionDigits: 0
             };
-            let formattedNumber = Number(this.varDigitStr).toLocaleString("uk-UA", options);
-            if ("." === this.lastIndex(this.varDigitStr)) this.$digit.innerHTML = formattedNumber + ","; else this.$digit.innerHTML = formattedNumber;
+            if (this.varDigitStr.length <= this.numberLimit) {
+                let formattedNumber = Number(this.varDigitStr).toLocaleString("uk-UA", options);
+                console.log("varDigitStrvarDigitStrvarDigitStr", this.varDigitStr);
+                if ("." === this.lastIndex(this.varDigitStr)) this.$digit.innerHTML = formattedNumber + ","; else this.$digit.innerHTML = formattedNumber;
+            } else if (this.varDigitStr.length > this.numberLimit) {
+                //! Форматує результат в науковий формат (число Ейлера або експоненційний формат)
+                this.$digit.innerHTML = Number(this.varDigitStr).toExponential().replace("e+", "e");
+                let originalLength = this.$digit.innerHTML.length;
+                const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, "g");
+                let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, "$1").replace(/0+$/g, "");
+                let roundingAfterDotExpon = this.numberLimit - (originalLength - formatEtoN.length + Math.floor(+formatEtoN).toString().length);
+                console.log("formatEtoN", formatEtoN);
+                this.$digit.innerHTML = Number(this.varDigitStr).toExponential(roundingAfterDotExpon).replace(/\.?0+e/g, "e").replace("e+", "e");
+                this.exponentialRound = roundingAfterDotExpon;
+ //! вивід в консоль в файлі script.js
+                        }
             const container = document.querySelector(".calc__screen");
             const paddingLeftСontainer = parseFloat(getComputedStyle(container).paddingLeft);
             const paddingRightСontainer = parseFloat(getComputedStyle(container).paddingRight);
@@ -354,8 +374,7 @@
             if (calc.varDigitStr.length < calc.numberLimit + 1) if (calc.varDigitStr.includes(".")) calc.numbersEntryAorB(); //! Запис числа 1 або 2
              else if (calc.varDigitStr.length < calc.numberLimit) calc.numbersEntryAorB();
  //! Запис числа 1 або 2
-                        calc.removeLastDot();
-            calc.buttonNegative();
+                        calc.buttonNegative();
             calc.equalSymbol();
  //! 1+2+3 FIX PROBLEM! OLD
                         if ("=" === calc.targetDataSet.equal) calc.buttonsEqual();
@@ -389,6 +408,8 @@
             console.warn("digitCopy ", calc.digitCopy);
             console.warn("$digit ", calc.$digit.innerHTML);
             console.warn("varDigitStr ", calc.varDigitStr);
+            console.warn("roundingAfterDot()", calc.roundingAfterDot());
+            console.warn("exponentialRound", calc.exponentialRound);
         }
     }));
     window["FLS"] = true;

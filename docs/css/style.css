@@ -388,6 +388,7 @@ header {
 
 .calc__screen p {
   font-size: 87.5px;
+  white-space: nowrap;
   font-weight: 300;
 }
 

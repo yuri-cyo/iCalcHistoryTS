@@ -32,7 +32,6 @@ calc.$el.addEventListener('click', (e)=> {
 			}
 		}
 		// calc.removeLastDot()
-		calc.removeLastDot()
 		calc.buttonNegative()
 		calc.equalSymbol() //! 1+2+3 FIX PROBLEM! OLD
 		
@@ -54,6 +53,7 @@ calc.$el.addEventListener('click', (e)=> {
 		calc.clearAfterEqualPressNum()
 		calc.buttonACContent()
 		calc.digitRender()
+		
 		calc.blinkingDigit()
 		// calc.limitNumbers()
 		// calc.fixDots()
@@ -82,6 +82,8 @@ calc.$el.addEventListener('click', (e)=> {
 				console.warn('digitCopy ',calc.digitCopy)
 				console.warn('$digit ',calc.$digit.innerHTML)
 				console.warn('varDigitStr ',calc.varDigitStr)
+				console.warn('roundingAfterDot()', calc.roundingAfterDot());
+				console.warn('exponentialRound', calc.exponentialRound);
 	}
 
 	

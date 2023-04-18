@@ -138,6 +138,7 @@ header {
 
 			p { //* циферблат
 				font-size: $fs-digit;
+				white-space: nowrap;
 				// font-size: var(--fs-digit);
 				font-weight: $fw-digit;
 				// overflow: hidden;
