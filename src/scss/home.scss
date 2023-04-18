@@ -52,6 +52,9 @@ $fs-control-button: calc(60px / 100 * $applicationScale) ;
 $fs-number-button: calc(70px / 100 * $applicationScale) ;
 $fs-math-button: calc(85px / 100 * $applicationScale) ;
 $fs-digit: calc(175px / 100 * $applicationScale);
+// :root {
+// 	--fs-digit: calc(85px / 100 * $applicationScale);
+// }
 $maxWidthCalc: 706px;
 
 $fw-control-button: 500;
@@ -69,6 +72,7 @@ $gap: calc(26px / 100 * $applicationScale);
 $screen-h: calc(390px / 100 * $applicationScale); // 422px
 $screen-w: calc(654px / 100 * $applicationScale); // 422px
 $screen-padding: calc(35px / 100 * $applicationScale) calc(18px / 100 * $applicationScale);
+// $screen-padding: calc(35px / 100 * $applicationScale) 0;
 // animation
 $transition-btn: .7s;
 
@@ -81,6 +85,7 @@ body {
 	// min-width: 100vw;
 	// height: 102vh;
 	background: #000000;
+	overflow: hidden;
 	// @media (max-width: em(355)) {
 		
 	// 	min-width: 340px;
@@ -133,7 +138,9 @@ header {
 
 			p { //* циферблат
 				font-size: $fs-digit;
+				// font-size: var(--fs-digit);
 				font-weight: $fw-digit;
+				// overflow: hidden;
 				// max-width: 100%;
 			}
 	}

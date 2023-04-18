@@ -1,9 +1,14 @@
 export class Calc {
 	constructor(selector, options) {
-		this.options = options
+    
+		this.arrOperations = ['ac', '%', '/', '*', '-', '+']
 		this.$el = document.querySelector(`#${selector}`)
 		// this.$btns = document.querySelector('.button')
 		this.$digit = document.querySelector('[data-digit]')
+    this.numberLimit = options.numberLimit
+    // this.originalFontSize$Digit = getComputedStyle(this.$digit).getPropertyValue('font-size')
+    this.varDigitStr = ''
+
     this.$buttonAC = document.querySelector('[data-clear]')
     this.$buttonsMath = document.querySelectorAll('[data-math]')
 		
@@ -13,10 +18,11 @@ export class Calc {
 		this.numA = ''
 		this.symbol = ''
 		this.numB = ''
+    // this.limitNumbers()
 		this.resultAB = ''
     this.returnAorB = ''
-    this.statuslastDot = false
-    this.numberAfterDot = null
+    // this.statuslastDot = false
+    // this.numberAfterDot = null
     this.statusnoNumBEqualNumA = false
 
     this.digitCopy = ''
@@ -45,6 +51,7 @@ export class Calc {
 
   clearVars() {
     this.$digit.innerHTML = '0'
+    this.varDigitStr = '0'
     this.numA = ''
     this.numB = ''
     this.symbol = ''
@@ -52,7 +59,7 @@ export class Calc {
     this.returnAorB = ''
     this.negativeCount = 1 //!
     this.equalCount = 1
-    this.statuslastDot = false
+    // this.statuslastDot = false
     this.statusnoNumBEqualNumA = false
     this.mathBtnsClearActive()
     // this.arrDigigt = ['0']
@@ -63,42 +70,60 @@ export class Calc {
       this.mathBtnsClearActive()
 
       const fnNumAClearOneSymbol = () => {
-        this.digitRender(this.$digit.innerHTML.slice(0, -1))
-        this.numA = this.$digit.innerHTML
-        this.returnAorB = this.$digit.innerHTML
+        // this.digitRender(this.$digit.innerHTML.slice(0, -1))
+        this.varDigitStr = this.varDigitStr.slice(0, -1)
+        this.numA = this.varDigitStr
+        this.returnAorB = this.varDigitStr
       }
       const fnNumBClearOneSymbol = () => {
-        this.digitRender(this.$digit.innerHTML.slice(0, -1))
-        this.numB = this.$digit.innerHTML
-        this.returnAorB = this.$digit.innerHTML
+        // this.digitRender(this.$digit.innerHTML.slice(0, -1))
+        this.varDigitStr = this.varDigitStr.slice(0, -1)
+        this.numB = this.varDigitStr
+        this.returnAorB = this.varDigitStr
       }
       
       if (
         this.symbol === '' && 
         this.numB === '') {
-          if (this.lastIndex(this.$digit.innerHTML) === '.') {
-            this.statuslastDot = false
-            this.digitRender(this.$digit.innerHTML.slice(0, -1))
-            this.numberAfterDot = null
-            this.numB.slice(0, -1)
-            }   
+          // if (this.lastIndex(this.varDigitStr) === '.') {
+          //   // this.statuslastDot = false
+          //   // this.digitRender(this.$digit.innerHTML.slice(0, -1))
+          //   this.varDigitStr = this.varDigitStr.slice(0, -1)
+          //   // this.numberAfterDot = null
+          //   this.numB.slice(0, -1)
+          //   }   
             fnNumAClearOneSymbol()
           }
 
           if (this.numA !== ''
           && this.symbol !== '') {
-              if (this.lastIndex(this.$digit.innerHTML) === '.') {
-                this.statuslastDot = false
-                this.digitRender(this.$digit.innerHTML.slice(0, -1))
-                this.numberAfterDot = null
-                }   
+              // if (this.lastIndex(this.varDigitStr) === '.') {
+              //   // this.statuslastDot = false
+              //   // this.digitRender(this.$digit.innerHTML.slice(0, -1))
+              //   this.varDigitStr = this.varDigitStr.slice(0, -1)
+              //   // this.numberAfterDot = null
+              //   }   
                 fnNumBClearOneSymbol()
           }
           if (this.numA === '' || this.numB === '' ) {
-            if (this.$digit.innerHTML === '') {
-              this.digitRender('0')
+            if (this.varDigitStr === '') {
+              // this.digitRender('0')
+              this.varDigitStr = '0'
             }
           }
+            if (this.varDigitStr === '-') {
+              // this.digitRender('0')
+              this.varDigitStr = '0'
+              this.AorB('-0', '=')
+              if (this.numA === '-') {
+                this.numA = '0'
+                this.returnAorB = '0'
+              }
+              if (this.numB === '-') {
+                this.numB = '0'
+                this.returnAorB = '0'
+              }
+            }
     }
   }
 
@@ -149,8 +174,9 @@ export class Calc {
       this.target.classList.toggle('button__math-active')
       // console.error(this.target.style.color = 'black');
 
-      if (this.lastIndex(this.$digit.innerHTML) === '.') {
-        this.digitRender(this.$digit.innerHTML.replace(/\.$/d, '')) //! Fix last dot!
+      if (this.lastIndex(this.varDigitStr) === '.') {
+        // this.digitRender(this.$digit.innerHTML.replace(/\.$/d, '')) //! Fix last dot!
+        this.varDigitStr = this.varDigitStr.replace(/\.$/d, '') //! Fix last dot!
       }
 		} else {
 
@@ -183,9 +209,11 @@ export class Calc {
       if (x === 1 && modifier === '=') this.numA = value //* при клікі на число додається в змінну numA
       if (x === 1 && modifier === '+') this.numA += value //* при клікі на число додається в змінну numA
 
-      this.digitRender(this.numA)  //* вивід на табло numA
+      // this.digitRender(this.numA)  //* вивід на табло numA
+      this.varDigitStr = this.numA //* вивід на табло numA
       this.fixDots()
       this.removeLastDot()
+      // this.limitNumbers()
       this.returnAorB = this.numA
       break
 
@@ -197,7 +225,9 @@ export class Calc {
       if (x === 2 && modifier === '+') this.numB += value //* при клікі на число додається в змінну numA
       
       this.fixDots()
-      this.digitRender(this.numB)
+      // this.digitRender(this.numB)
+      this.varDigitStr = this.numB
+      // this.limitNumbers()
       this.returnAorB = this.numB
       break
     }
@@ -230,53 +260,62 @@ export class Calc {
                     .replace(/-[^.\d]+/g,"")
                     .replace( /^([^\.]*\.)|\./g, '$1' )) 
 
-    this.digitRender(this.$digit.innerHTML
-                    .replace(/-[^.\d]+/g,"")
-                    .replace( /^([^\.]*\.)|\./g, '$1' ))
+    // this.digitRender(this.$digit.innerHTML
+    //                 .replace(/-[^.\d]+/g,"")
+    //                 .replace( /^([^\.]*\.)|\./g, '$1' ))
+    this.varDigitStr = this.varDigitStr
+                      .replace(/-[^.\d]+/g,"")
+                      .replace( /^([^\.]*\.)|\./g, '$1' )
 
-    if (this.lastIndex(this.$digit.innerHTML) === '.' && this.options.includes(this.targetDataSet.math)) {
-      this.digitRender(this.$digit.innerHTML.replace(/\.$/d), '')
+    if (this.lastIndex(this.varDigitStr) === '.' && this.arrOperations.includes(this.targetDataSet.math)) {
+      // this.digitRender(this.$digit.innerHTML.replace(/\.$/d, ''))
+      this.varDigitStr = this.varDigitStr.replace(/\.$/d, '')
     }
     
   }
 
+  // removeLastDot() {
+  //   console.error('this.statuslastDot ' + this.statuslastDot);
+  //   if (this.lastIndex(this.numAB()) === '.') {
+  //     this.statuslastDot = true
+  //     this.AorB(this.numAB().replace(/\.$/d, '') , '=')
+  //     // this.digitRender(this.numAB() + '.')
+  //     this.varDigitStr = this.numAB() + '.'
+  //   }
+  //   if (this.statuslastDot === true 
+  //       && this.lastIndex(this.numAB()) !== '.'
+  //       && this.targetDataSet.number !== '.'
+  //       && this.targetDataSet.number !== '-') {
+  //         console.error('this.statuslastDot ' + this.statuslastDot);
+  //         this.statuslastDot = false
+  //         // let this.numberAfterDot = null
+  //         this.numberAfterDot = this.lastIndex(this.numAB())
+          
+  //         this.AorB(this.numAB().replace(/.$/d, '.' + this.numberAfterDot), '=')
+
+  //         if (this.numAB().length === 2 && this.numAB()[0] === '.') {
+  //           this.AorB(0 + this.numAB(), '=')
+  //         }
+
+  //         console.error('this.statuslastDot + NUM ' + this.statuslastDot);
+  //         console.error('this.numberAfterDot + NUM ' + this.numberAfterDot);
+  //       }
+
+  //   if (this.numAB() === '' && this.statuslastDot === true) {
+  //     // this.$digit.innerHTML = '0.'
+  //     this.AorB('0', '=')
+  //     // this.digitRender('0.')
+  //     this.varDigitStr = '0.'
+  //   }
+  //   if (typeof this.targetDataSet.math === 'string') {
+  //     this.statuslastDot = false
+  //   }
+  //       // if (this.targetDataSet.number !== '.' && this.statuslastDot === true) {
+  //       // }
+  // }
 
   removeLastDot() {
-    console.error('this.statuslastDot ' + this.statuslastDot);
-    if (this.lastIndex(this.numAB()) === '.') {
-      this.statuslastDot = true
-      this.AorB(this.numAB().replace(/\.$/d, '') , '=')
-      this.digitRender(this.numAB() + '.')
-    }
-    if (this.statuslastDot === true 
-        && this.lastIndex(this.numAB()) !== '.'
-        && this.targetDataSet.number !== '.'
-        && this.targetDataSet.number !== '-') {
-          console.error('this.statuslastDot ' + this.statuslastDot);
-          this.statuslastDot = false
-          // let this.numberAfterDot = null
-          this.numberAfterDot = this.lastIndex(this.numAB())
-          
-          this.AorB(this.numAB().replace(/.$/d, '.' + this.numberAfterDot), '=')
-
-          if (this.numAB().length === 2 && this.numAB()[0] === '.') {
-            this.AorB(0 + this.numAB(), '=')
-          }
-
-          console.error('this.statuslastDot + NUM ' + this.statuslastDot);
-          console.error('this.numberAfterDot + NUM ' + this.numberAfterDot);
-        }
-
-    if (this.numAB() === '' && this.statuslastDot === true) {
-      // this.$digit.innerHTML = '0.'
-      this.AorB('0', '=')
-      this.digitRender('0.')
-    }
-    if (typeof this.targetDataSet.math === 'string') {
-      this.statuslastDot = false
-    }
-        // if (this.targetDataSet.number !== '.' && this.statuslastDot === true) {
-        // }
+   
   }
 
   buttonNegative() {
@@ -308,7 +347,8 @@ export class Calc {
       console.error('equalCount = ' + this.equalCount)
       // this.removeLastDot()
       console.error('buttonsEqual() numB ' + this.numB);
-      this.digitRender(this.resultAB)
+      // this.digitRender(this.resultAB)
+      this.varDigitStr = this.resultAB
       this.numA = this.resultAB
       // this.mathBtnsClearActive()
     }
@@ -327,7 +367,7 @@ export class Calc {
   }
 
   equalSymbol() {
-    if(this.options.includes(this.targetDataSet.math)
+    if(this.arrOperations.includes(this.targetDataSet.math)
         && this.numA !== ''
         && this.symbol !== ''
         && this.numB !== '') {
@@ -335,7 +375,8 @@ export class Calc {
       console.error('includes')
       
       this.numA = this.resultAB
-      this.digitRender(this.numA)
+      // this.digitRender(this.numA)
+      this.varDigitStr = this.numA
       this.numB = ''
     }
   }
@@ -348,7 +389,10 @@ export class Calc {
         this.numB = this.numA
         this.mathOperations() 
         this.numA = this.resultAB
-        this.digitRender(this.numA)
+        // this.digitRender(this.numA)
+        this.varDigitStr = this.numA
+
+        this.resultAB = this.numA
         this.statusnoNumBEqualNumA = true
         this.equalCount += 1
         this.mathBtnsClearActive()
@@ -382,11 +426,11 @@ export class Calc {
   }
 
   foFixedNumFloat() {
-    let intDigitLength = parseInt(this.$digit.innerHTML) + '';
+    let intDigitLength = parseInt(this.varDigitStr) + '';
     intDigitLength = intDigitLength.length
-    this.resultdigitLengthFloat = this.$digit.innerHTML.length - intDigitLength
+    this.resultdigitLengthFloat = this.varDigitStr.length - intDigitLength
     this.resultdigitLengthFloat = this.resultdigitLengthFloat + ''
-    if (this.$digit.innerHTML.includes('.')) this.resultdigitLengthFloat;
+    if (this.varDigitStr.includes('.')) this.resultdigitLengthFloat;
 
     console.error('this.resultdigitLengthFloat ' + this.resultdigitLengthFloat);
     console.error(this.resultdigitLengthFloat);
@@ -405,22 +449,122 @@ export class Calc {
   fixDotWithoutZero() {
     if (this.numA === '.') {
       this.numA = '0.'
-      this.digitRender('0.')
+      // this.digitRender('0.')
+      this.varDigitStr = '0.'
       this.returnAorB = '0.'
     }
     if (this.numB === '.') {
       this.numB = '0.'
-      this.digitRender('0.')
+      // this.digitRender('0.')
+      this.varDigitStr = '0.'
       this.returnAorB = '0.'
     }
   }
   
-	digitRender(numberStr) {
-    this.$digit.innerHTML = numberStr
+	// digitRender(numberStr) {
+  //   this.$digit.innerHTML = numberStr
+	// }
+  limitNumbers() {
+    // if (this.varDigitStr.length > this.numberLimit) {
+    //   if (this.varDigitStr.includes('.')) {
+    //     if (this.varDigitStr[this.varDigitStr.length - 1] === '.') {
+    //       return
+    //     } else {
+    //       this.varDigitStr = this.varDigitStr.slice(0, this.numberLimit + 1)
+          
+    //     }
+    //   } else {
+    //     this.varDigitStr = this.varDigitStr.slice(0, this.numberLimit)
+    //   }
+    // }
+
+    if (this.numA.length > this.numberLimit) {
+      if (this.numA.includes('.')) {
+        if (this.numA[this.numA.length - 1] === '.') {
+          return
+        } else {
+          this.numA = this.numA.slice(0, this.numberLimit + 1)
+          
+        }
+      } else {
+        this.numA = this.numA.slice(0, this.numberLimit)
+      }
+    }
+
+    if (this.numB.length > this.numberLimit) {
+      if (this.numB.length === this.numberLimit && this.numB.includes('.')) {
+        if (this.numB[this.numB.length - 1] === '.') {
+          this.numB = this.numB.slice(0, this.numberLimit)
+        } else {
+          this.numB = this.numB.slice(0, this.numberLimit + 1)
+          
+        }
+      } else {
+        this.numB = this.numB.slice(0, this.numberLimit)
+      }
+    }
+  }
+
+  digitRender() {
+    // if (this.varDigitStr.length > this.numberLimit) {
+    //   if (this.varDigitStr.includes('.')) {
+    //     if (this.varDigitStr[this.varDigitStr.length - 1] === '.') {
+    //       return
+    //     } else {
+    //       this.varDigitStr = this.varDigitStr.slice(0, this.numberLimit + 1)
+          
+    //     }
+    //   } else {
+    //     this.varDigitStr = this.varDigitStr.slice(0, this.numberLimit)
+    //   }
+    // }
+
+    // this.limitDigitNumbers(this.varDigitStr)
+    const options = {
+      // useGrouping: true,
+      maximumFractionDigits: 10,
+      minimumFractionDigits: 0
+    }
+
+    let formattedNumber = Number(this.varDigitStr).toLocaleString('uk-UA', options)
+    // .replace(',', '.')
+    if (this.lastIndex(this.varDigitStr) === '.') {
+      // this.$digit.innerHTML = formattedNumber + '.'
+      this.$digit.innerHTML = formattedNumber + ','
+    } else {
+      this.$digit.innerHTML = formattedNumber
+    }
+
+    // const container = this.$digit.parentNode
+    const container = document.querySelector('.calc__screen')
+    const paddingLeftСontainer = parseFloat(getComputedStyle(container).paddingLeft);
+    const paddingRightСontainer = parseFloat(getComputedStyle(container).paddingRight);
+    const widthContainer = container.offsetWidth - paddingLeftСontainer - paddingRightСontainer
+    console.log('widthContainer', widthContainer);
+    console.log('this.$digit', this.$digit.offsetWidth);
+    // console.log('container.offsetWidth', container.offsetWidth - container.paddingLeft - container.paddingRight);
+    // const text = document.querySelector('.text');
+    // const originalFontSize$Digit = getComputedStyle(this.$digit).getPropertyValue('font-size')
+    // console.log('originalFontSize', originalFontSize);
+    let fontSize = parseInt(window.getComputedStyle(this.$digit).fontSize);
+    
+    while (this.$digit.offsetWidth > widthContainer && fontSize >= 48) {
+      fontSize -= 1;
+      this.$digit.style.fontSize = `${fontSize}px`;
+    }
+    while (this.$digit.offsetWidth < widthContainer && fontSize <= 87.5) {
+      fontSize += 1;
+      this.$digit.style.fontSize = `${fontSize}px`;
+    }
+  
 	}
 
+  // returnDigit() {
+  //   return this.$digit.innerHTML.replace(/[^0-9,]+/g, '').replace(/,/g, '.')
+  // }
+
   blinkingDigit() {
-    this.arrDigigt.push(this.$digit.innerHTML)
+    this.arrDigigt.push(this.varDigitStr)
     this.arrDigigt = this.arrDigigt.slice(-2)
     
     console.log('this.arrDigigt', this.arrDigigt);
@@ -448,7 +592,8 @@ export class Calc {
 
           if (this.symbol === '') {
             this.numA = this.fnToFixed(this.numA / 100)
-            this.digitRender(this.numA)
+            // this.digitRender(this.numA)
+            this.varDigitStr = this.numA
           }
 
           if (this.symbol === '+' || this.symbol === '-') { //! кнопки і операції => 10, + or -, % (this.numB = this.numA / 100 * this.numA)
@@ -456,14 +601,16 @@ export class Calc {
             // this.numB = this.numA / 100 * this.numA
             
             // this.numA = this.numA / 100
-            this.digitRender(this.numB)
+            // this.digitRender(this.numB)
+            this.varDigitStr = this.numB
             console.log('if percent', 1);
           }  
 
           if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 10, * or /, % (this.numB = this.numA / 100)
             this.numB = this.fnToFixed(this.numA / 100)
             // this.numA = this.numA / 100
-          this.digitRender(this.numB)
+          // this.digitRender(this.numB)
+          this.varDigitStr = this.numB
           console.log('if percent', 2);
           }
       } else if (this.numA !== '' && this.numB !== '') {
@@ -471,13 +618,15 @@ export class Calc {
           if (this.symbol === '+' || this.symbol === '-'){ //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
             this.numB = this.fnToFixed(this.numA / 100 * this.numB)
             // this.numA = this.numA / 100
-            this.digitRender(this.numB)
+            // this.digitRender(this.numB)
+            this.varDigitStr = this.numB
             console.log('if percent', 3);
           }  
 
           if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
             this.numB = this.fnToFixed(this.numB / 100)
-            this.digitRender(this.numB)
+            // this.digitRender(this.numB)
+            this.varDigitStr = this.numB
             console.log('if percent', 4);
           }  
       } 

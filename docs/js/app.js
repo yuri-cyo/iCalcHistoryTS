@@ -15,9 +15,11 @@
     }
     class Calc {
         constructor(selector, options) {
-            this.options = options;
+            this.arrOperations = [ "ac", "%", "/", "*", "-", "+" ];
             this.$el = document.querySelector(`#${selector}`);
             this.$digit = document.querySelector("[data-digit]");
+            this.numberLimit = options.numberLimit;
+            this.varDigitStr = "";
             this.$buttonAC = document.querySelector("[data-clear]");
             this.$buttonsMath = document.querySelectorAll("[data-math]");
             this.negativeCount = 1;
@@ -27,12 +29,11 @@
             this.numB = "";
             this.resultAB = "";
             this.returnAorB = "";
-            this.statuslastDot = false;
-            this.numberAfterDot = null;
             this.statusnoNumBEqualNumA = false;
             this.digitCopy = "";
             this.arrDigigt = [ "0" ];
         }
+        digitStyle() {}
         buttonACContent() {
             if ("" !== this.numA || "" !== this.numB) this.$buttonAC.innerHTML = "C"; else if ("" === this.numA || "" === this.numB) this.$buttonAC.innerHTML = "AC";
         }
@@ -44,6 +45,7 @@
         }
         clearVars() {
             this.$digit.innerHTML = "0";
+            this.varDigitStr = "0";
             this.numA = "";
             this.numB = "";
             this.symbol = "";
@@ -52,7 +54,6 @@
             this.negativeCount = 1;
  //!
                         this.equalCount = 1;
-            this.statuslastDot = false;
             this.statusnoNumBEqualNumA = false;
             this.mathBtnsClearActive();
         }
@@ -60,33 +61,30 @@
             if ("c" === this.targetDataSet.clearone && "" !== this.returnAorB) {
                 this.mathBtnsClearActive();
                 const fnNumAClearOneSymbol = () => {
-                    this.digitRender(this.$digit.innerHTML.slice(0, -1));
-                    this.numA = this.$digit.innerHTML;
-                    this.returnAorB = this.$digit.innerHTML;
+                    this.varDigitStr = this.varDigitStr.slice(0, -1);
+                    this.numA = this.varDigitStr;
+                    this.returnAorB = this.varDigitStr;
                 };
                 const fnNumBClearOneSymbol = () => {
-                    this.digitRender(this.$digit.innerHTML.slice(0, -1));
-                    this.numB = this.$digit.innerHTML;
-                    this.returnAorB = this.$digit.innerHTML;
+                    this.varDigitStr = this.varDigitStr.slice(0, -1);
+                    this.numB = this.varDigitStr;
+                    this.returnAorB = this.varDigitStr;
                 };
-                if ("" === this.symbol && "" === this.numB) {
-                    if ("." === this.lastIndex(this.$digit.innerHTML)) {
-                        this.statuslastDot = false;
-                        this.digitRender(this.$digit.innerHTML.slice(0, -1));
-                        this.numberAfterDot = null;
-                        this.numB.slice(0, -1);
+                if ("" === this.symbol && "" === this.numB) fnNumAClearOneSymbol();
+                if ("" !== this.numA && "" !== this.symbol) fnNumBClearOneSymbol();
+                if ("" === this.numA || "" === this.numB) if ("" === this.varDigitStr) this.varDigitStr = "0";
+                if ("-" === this.varDigitStr) {
+                    this.varDigitStr = "0";
+                    this.AorB("-0", "=");
+                    if ("-" === this.numA) {
+                        this.numA = "0";
+                        this.returnAorB = "0";
                     }
-                    fnNumAClearOneSymbol();
-                }
-                if ("" !== this.numA && "" !== this.symbol) {
-                    if ("." === this.lastIndex(this.$digit.innerHTML)) {
-                        this.statuslastDot = false;
-                        this.digitRender(this.$digit.innerHTML.slice(0, -1));
-                        this.numberAfterDot = null;
+                    if ("-" === this.numB) {
+                        this.numB = "0";
+                        this.returnAorB = "0";
                     }
-                    fnNumBClearOneSymbol();
                 }
-                if ("" === this.numA || "" === this.numB) if ("" === this.$digit.innerHTML) this.digitRender("0");
             }
         }
         AorB(a, opertion) {
@@ -121,7 +119,7 @@
                 this.symbol = this.targetDataSet.math;
                 this.mathBtnsClearActive();
                 this.target.classList.toggle("button__math-active");
-                if ("." === this.lastIndex(this.$digit.innerHTML)) this.digitRender(this.$digit.innerHTML.replace(/\.$/d, ""));
+                if ("." === this.lastIndex(this.varDigitStr)) this.varDigitStr = this.varDigitStr.replace(/\.$/d, "");
  //! Fix last dot!
                         }
         }
@@ -138,7 +136,7 @@
                 this.fixMultiZero(this.numA);
                 if (1 === x && "=" === modifier) this.numA = value;
                 if (1 === x && "+" === modifier) this.numA += value;
-                this.digitRender(this.numA);
+                this.varDigitStr = this.numA;
                 this.fixDots();
                 this.removeLastDot();
                 this.returnAorB = this.numA;
@@ -150,7 +148,7 @@
                 if (2 === x && "=" === modifier) this.numB = value;
                 if (2 === x && "+" === modifier) this.numB += value;
                 this.fixDots();
-                this.digitRender(this.numB);
+                this.varDigitStr = this.numB;
                 this.returnAorB = this.numB;
                 break;
             }
@@ -166,31 +164,10 @@
         }
         fixDots() {
             this.returnVarAB(this.numAB().replace(/-[^.\d]+/g, "").replace(/^([^\.]*\.)|\./g, "$1"));
-            this.digitRender(this.$digit.innerHTML.replace(/-[^.\d]+/g, "").replace(/^([^\.]*\.)|\./g, "$1"));
-            if ("." === this.lastIndex(this.$digit.innerHTML) && this.options.includes(this.targetDataSet.math)) this.digitRender(this.$digit.innerHTML.replace(/\.$/d), "");
+            this.varDigitStr = this.varDigitStr.replace(/-[^.\d]+/g, "").replace(/^([^\.]*\.)|\./g, "$1");
+            if ("." === this.lastIndex(this.varDigitStr) && this.arrOperations.includes(this.targetDataSet.math)) this.varDigitStr = this.varDigitStr.replace(/\.$/d, "");
         }
-        removeLastDot() {
-            console.error("this.statuslastDot " + this.statuslastDot);
-            if ("." === this.lastIndex(this.numAB())) {
-                this.statuslastDot = true;
-                this.AorB(this.numAB().replace(/\.$/d, ""), "=");
-                this.digitRender(this.numAB() + ".");
-            }
-            if (true === this.statuslastDot && "." !== this.lastIndex(this.numAB()) && "." !== this.targetDataSet.number && "-" !== this.targetDataSet.number) {
-                console.error("this.statuslastDot " + this.statuslastDot);
-                this.statuslastDot = false;
-                this.numberAfterDot = this.lastIndex(this.numAB());
-                this.AorB(this.numAB().replace(/.$/d, "." + this.numberAfterDot), "=");
-                if (2 === this.numAB().length && "." === this.numAB()[0]) this.AorB(0 + this.numAB(), "=");
-                console.error("this.statuslastDot + NUM " + this.statuslastDot);
-                console.error("this.numberAfterDot + NUM " + this.numberAfterDot);
-            }
-            if ("" === this.numAB() && true === this.statuslastDot) {
-                this.AorB("0", "=");
-                this.digitRender("0.");
-            }
-            if ("string" === typeof this.targetDataSet.math) this.statuslastDot = false;
-        }
+        removeLastDot() {}
         buttonNegative() {
             if ("-" === this.lastIndex(this.numAB())) this.AorB(this.numAB().replace(/-$/g, "").replace(/^/g, "-"), "=");
             if ("-" === this.numAB()) this.AorB(this.numAB().replace(/$/g, "0"), "=");
@@ -203,7 +180,7 @@
                 console.warn("method =");
                 console.error("equalCount = " + this.equalCount);
                 console.error("buttonsEqual() numB " + this.numB);
-                this.digitRender(this.resultAB);
+                this.varDigitStr = this.resultAB;
                 this.numA = this.resultAB;
             }
         }
@@ -218,10 +195,10 @@
             }
         }
         equalSymbol() {
-            if (this.options.includes(this.targetDataSet.math) && "" !== this.numA && "" !== this.symbol && "" !== this.numB) {
+            if (this.arrOperations.includes(this.targetDataSet.math) && "" !== this.numA && "" !== this.symbol && "" !== this.numB) {
                 console.error("includes");
                 this.numA = this.resultAB;
-                this.digitRender(this.numA);
+                this.varDigitStr = this.numA;
                 this.numB = "";
             }
         }
@@ -230,7 +207,8 @@
                 this.numB = this.numA;
                 this.mathOperations();
                 this.numA = this.resultAB;
-                this.digitRender(this.numA);
+                this.varDigitStr = this.numA;
+                this.resultAB = this.numA;
                 this.statusnoNumBEqualNumA = true;
                 this.equalCount += 1;
                 this.mathBtnsClearActive();
@@ -261,11 +239,11 @@
             }
         }
         foFixedNumFloat() {
-            let intDigitLength = parseInt(this.$digit.innerHTML) + "";
+            let intDigitLength = parseInt(this.varDigitStr) + "";
             intDigitLength = intDigitLength.length;
-            this.resultdigitLengthFloat = this.$digit.innerHTML.length - intDigitLength;
+            this.resultdigitLengthFloat = this.varDigitStr.length - intDigitLength;
             this.resultdigitLengthFloat = this.resultdigitLengthFloat + "";
-            if (this.$digit.innerHTML.includes(".")) this.resultdigitLengthFloat;
+            if (this.varDigitStr.includes(".")) this.resultdigitLengthFloat;
             console.error("this.resultdigitLengthFloat " + this.resultdigitLengthFloat);
             console.error(this.resultdigitLengthFloat);
             return this.resultAB = this.fnToFixed(this.resultAB);
@@ -277,20 +255,44 @@
         fixDotWithoutZero() {
             if ("." === this.numA) {
                 this.numA = "0.";
-                this.digitRender("0.");
+                this.varDigitStr = "0.";
                 this.returnAorB = "0.";
             }
             if ("." === this.numB) {
                 this.numB = "0.";
-                this.digitRender("0.");
+                this.varDigitStr = "0.";
                 this.returnAorB = "0.";
             }
         }
-        digitRender(numberStr) {
-            this.$digit.innerHTML = numberStr;
+        limitNumbers() {
+            if (this.numA.length > this.numberLimit) if (this.numA.includes(".")) if ("." === this.numA[this.numA.length - 1]) return; else this.numA = this.numA.slice(0, this.numberLimit + 1); else this.numA = this.numA.slice(0, this.numberLimit);
+            if (this.numB.length > this.numberLimit) if (this.numB.length === this.numberLimit && this.numB.includes(".")) if ("." === this.numB[this.numB.length - 1]) this.numB = this.numB.slice(0, this.numberLimit); else this.numB = this.numB.slice(0, this.numberLimit + 1); else this.numB = this.numB.slice(0, this.numberLimit);
+        }
+        digitRender() {
+            const options = {
+                maximumFractionDigits: 10,
+                minimumFractionDigits: 0
+            };
+            let formattedNumber = Number(this.varDigitStr).toLocaleString("uk-UA", options);
+            if ("." === this.lastIndex(this.varDigitStr)) this.$digit.innerHTML = formattedNumber + ","; else this.$digit.innerHTML = formattedNumber;
+            const container = document.querySelector(".calc__screen");
+            const paddingLeftСontainer = parseFloat(getComputedStyle(container).paddingLeft);
+            const paddingRightСontainer = parseFloat(getComputedStyle(container).paddingRight);
+            const widthContainer = container.offsetWidth - paddingLeftСontainer - paddingRightСontainer;
+            console.log("widthContainer", widthContainer);
+            console.log("this.$digit", this.$digit.offsetWidth);
+            let fontSize = parseInt(window.getComputedStyle(this.$digit).fontSize);
+            while (this.$digit.offsetWidth > widthContainer && fontSize >= 48) {
+                fontSize -= 1;
+                this.$digit.style.fontSize = `${fontSize}px`;
+            }
+            while (this.$digit.offsetWidth < widthContainer && fontSize <= 87.5) {
+                fontSize += 1;
+                this.$digit.style.fontSize = `${fontSize}px`;
+            }
         }
         blinkingDigit() {
-            this.arrDigigt.push(this.$digit.innerHTML);
+            this.arrDigigt.push(this.varDigitStr);
             this.arrDigigt = this.arrDigigt.slice(-2);
             console.log("this.arrDigigt", this.arrDigigt);
             if (this.arrDigigt[0] === this.arrDigigt[1]) {
@@ -309,37 +311,39 @@
             if ("%" === eTarget.dataset.percent) if ("" !== this.numA && "" === this.numB) {
                 if ("" === this.symbol) {
                     this.numA = this.fnToFixed(this.numA / 100);
-                    this.digitRender(this.numA);
+                    this.varDigitStr = this.numA;
                 }
                 if ("+" === this.symbol || "-" === this.symbol) {
                     //! кнопки і операції => 10, + or -, % (this.numB = this.numA / 100 * this.numA)
                     this.numB = this.fnToFixed(this.numA / 100 * this.numA);
-                    this.digitRender(this.numB);
+                    this.varDigitStr = this.numB;
                     console.log("if percent", 1);
                 }
                 if ("*" === this.symbol || "/" === this.symbol) {
                     //! кнопки і операції => 10, * or /, % (this.numB = this.numA / 100)
                     this.numB = this.fnToFixed(this.numA / 100);
-                    this.digitRender(this.numB);
+                    this.varDigitStr = this.numB;
                     console.log("if percent", 2);
                 }
             } else if ("" !== this.numA && "" !== this.numB) {
                 if ("+" === this.symbol || "-" === this.symbol) {
                     //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
                     this.numB = this.fnToFixed(this.numA / 100 * this.numB);
-                    this.digitRender(this.numB);
+                    this.varDigitStr = this.numB;
                     console.log("if percent", 3);
                 }
                 if ("*" === this.symbol || "/" === this.symbol) {
                     //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
                     this.numB = this.fnToFixed(this.numB / 100);
-                    this.digitRender(this.numB);
+                    this.varDigitStr = this.numB;
                     console.log("if percent", 4);
                 }
             }
         }
     }
-    const calc = new Calc("buttonsCalc", [ "ac", "%", "/", "*", "-", "+" ]);
+    const calc = new Calc("buttonsCalc", {
+        numberLimit: 9
+    });
     calc.$el.addEventListener("click", (e => {
         if (e.target.closest(".button")) {
             calc.targetDataSet = e.target.dataset;
@@ -347,7 +351,8 @@
             console.warn("press targetttttttttttttttttttttttttttttttt!!! " + calc.targetDataSet);
             if ("string" !== typeof calc.targetDataSet) ;
             calc.symbolEntry();
-            calc.numbersEntryAorB();
+            if (calc.varDigitStr.length < calc.numberLimit + 1) if (calc.varDigitStr.includes(".")) calc.numbersEntryAorB(); //! Запис числа 1 або 2
+             else if (calc.varDigitStr.length < calc.numberLimit) calc.numbersEntryAorB();
  //! Запис числа 1 або 2
                         calc.removeLastDot();
             calc.buttonNegative();
@@ -364,6 +369,7 @@
             calc.fixDotWithoutZero();
             calc.clearAfterEqualPressNum();
             calc.buttonACContent();
+            calc.digitRender();
             calc.blinkingDigit();
             //! рперший нуль тільки один!
                         console.group("looooooooooooooooooooooooooooooooooooooooogs");
@@ -382,6 +388,7 @@
             console.warn("last symbol in digit " + calc.returnAorB[calc.returnAorB.length - 1]);
             console.warn("digitCopy ", calc.digitCopy);
             console.warn("$digit ", calc.$digit.innerHTML);
+            console.warn("varDigitStr ", calc.varDigitStr);
         }
     }));
     window["FLS"] = true;

@@ -2,7 +2,9 @@ import { Calc } from "../modules/modules.js"
 
 /// ========================= 
 
-const calc = new Calc('buttonsCalc', ['ac', '%', '/', '*', '-', '+'])
+const calc = new Calc('buttonsCalc', {
+	numberLimit: 9
+})
 // calc.mathOperations()
 
 
@@ -22,7 +24,13 @@ calc.$el.addEventListener('click', (e)=> {
 		// calc.removeLastDot()
 		// calc.numEntryA() //! Запис числа 1
 		// calc.numEntryB() //! Запис числа 2
-		calc.numbersEntryAorB() //! Запис числа 1 або 2
+		if (calc.varDigitStr.length < calc.numberLimit + 1) {
+			if (calc.varDigitStr.includes('.')) {
+				calc.numbersEntryAorB() //! Запис числа 1 або 2
+			} else if (calc.varDigitStr.length < calc.numberLimit) {
+				calc.numbersEntryAorB() //! Запис числа 1 або 2
+			}
+		}
 		// calc.removeLastDot()
 		calc.removeLastDot()
 		calc.buttonNegative()
@@ -31,7 +39,7 @@ calc.$el.addEventListener('click', (e)=> {
 		if (calc.targetDataSet.equal === '=') {
 			calc.buttonsEqual() //! =
 		}
-
+		
 		calc.percentBtn(e.target)
 		
 		
@@ -45,7 +53,9 @@ calc.$el.addEventListener('click', (e)=> {
 		calc.fixDotWithoutZero()
 		calc.clearAfterEqualPressNum()
 		calc.buttonACContent()
+		calc.digitRender()
 		calc.blinkingDigit()
+		// calc.limitNumbers()
 		// calc.fixDots()
 	
 		// calc.baseDigit()
@@ -71,6 +81,7 @@ calc.$el.addEventListener('click', (e)=> {
 				console.warn('last symbol in digit ' + calc.returnAorB[calc.returnAorB.length - 1])
 				console.warn('digitCopy ',calc.digitCopy)
 				console.warn('$digit ',calc.$digit.innerHTML)
+				console.warn('varDigitStr ',calc.varDigitStr)
 	}
 
 	
