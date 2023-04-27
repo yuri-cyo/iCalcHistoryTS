@@ -2,6 +2,70 @@
 
 @charset "UTF-8";
 
+@font-face {
+  font-family: SFUIDisplay;
+  font-display: swap;
+  src: url("../fonts/SFUIDisplay-Black.woff2") format("woff2"), url("../fonts/SFUIDisplay-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  font-display: swap;
+  src: url("../fonts/SFUIDisplay-Light.woff2") format("woff2"), url("../fonts/SFUIDisplay-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  font-display: swap;
+  src: url("../fonts/SFUIDisplay-Medium.woff2") format("woff2"), url("../fonts/SFUIDisplay-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  font-display: swap;
+  src: url("../fonts/SFUIDisplay-Regular.woff2") format("woff2"), url("../fonts/SFUIDisplay-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  font-display: swap;
+  src: url("../fonts/SFUIDisplay-Ultralight.woff2") format("woff2"), url("../fonts/SFUIDisplay-Ultralight.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  font-display: swap;
+  src: url("../fonts/SFUIDisplay-Thin.woff2") format("woff2"), url("../fonts/SFUIDisplay-Thin.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  font-display: swap;
+  src: url("../fonts/SFUIDisplay-Semibold.woff2") format("woff2"), url("../fonts/SFUIDisplay-Semibold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIText;
+  font-display: swap;
+  src: url("../fonts/SFUIText-Medium.woff2") format("woff2"), url("../fonts/SFUIText-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
 * {
   padding: 0px;
   margin: 0px;
@@ -24,7 +88,7 @@ body {
 body {
   color: #333333;
   line-height: 1;
-  font-family: "Roboto";
+  font-family: "SFUIDisplay";
   font-size: 1rem;
   -ms-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
@@ -36,7 +100,7 @@ body {
 input,
 button,
 textarea {
-  font-family: "Roboto";
+  font-family: "SFUIDisplay";
   font-size: inherit;
 }
 
@@ -336,10 +400,16 @@ dd {
 
 body {
   color: #FFFFFF;
-  font-family: "Montserrat";
   font-weight: 400;
   background: #000000;
   overflow: hidden;
+  -webkit-user-select: none;
+  /* для iOS та Safari */
+  -moz-user-select: none;
+  /* для Firefox */
+  -ms-user-select: none;
+  /* для Internet Explorer та Edge */
+  user-select: none;
 }
 
 header {
@@ -362,7 +432,13 @@ header {
 }
 
 .calc {
-  display: block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   background-color: #000000;
   border-radius: 36px;
   -webkit-box-shadow: 3px 3px 50px 3px rgba(255, 255, 255, 0.2);
@@ -370,9 +446,17 @@ header {
   padding: 13px;
 }
 
+.calc__m-screen {
+  width: 100%;
+  min-height: 1rem;
+  font-size: 1rem;
+  padding: 0 9px;
+  background-color: #000000;
+}
+
 .calc__screen {
   min-height: 195px;
-  width: 100%;
+  height: 100%;
   max-width: 327px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -380,7 +464,7 @@ header {
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
-  padding: 17.5px 9px;
+  padding: 0 9px;
   -webkit-box-align: end;
       -ms-flex-align: end;
           align-items: flex-end;
@@ -389,7 +473,7 @@ header {
 .calc__screen p {
   font-size: 87.5px;
   white-space: nowrap;
-  font-weight: 300;
+  font-weight: 200;
 }
 
 .buttons__container {
@@ -397,19 +481,41 @@ header {
   display: grid;
   -ms-grid-columns: (72px)[4];
   grid-template-columns: repeat(4, 72px);
-  -ms-grid-rows: (72px)[5];
-  grid-template-rows: repeat(5, 72px);
+  -ms-grid-rows: (60px)[6];
+  grid-template-rows: repeat(6, 60px);
   gap: 13px;
 }
 
 .button {
   border-radius: 36px;
   text-align: center;
-  line-height: 72px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
       user-select: none;
+  -ms-touch-action: none;
+      touch-action: none;
+}
+
+.button__m {
+  font-size: 30px;
+  -webkit-transition: 0.7s ease;
+  -o-transition: 0.7s ease;
+  transition: 0.7s ease;
+  height: 80%;
+  -ms-flex-item-align: end;
+      -ms-grid-row-align: end;
+      align-self: end;
+  background-color: #2a2a2a;
 }
 
 .button__control {
@@ -419,41 +525,19 @@ header {
   -o-transition: 0.7s ease;
   transition: 0.7s ease;
   font-size: 30px;
-  font-weight: 500;
-}
-
-.button__control:hover {
-  background-color: #D9D9D9;
-  -webkit-transition: 0s ease;
-  -o-transition: 0s ease;
-  transition: 0s ease;
-}
-
-.button__control:active {
-  -webkit-filter: brightness(80%);
-          filter: brightness(80%);
+  font-weight: 400;
+  -ms-touch-action: none;
+      touch-action: none;
 }
 
 .button__number {
   background-color: #333333;
   color: #FBFBFB;
-  -webkit-transition: 0.7s ease;
-  -o-transition: 0.7s ease;
-  transition: 0.7s ease;
   font-size: 35px;
-  font-weight: 400;
-}
-
-.button__number:hover {
-  background-color: #737373;
-  -webkit-transition: 0s ease;
-  -o-transition: 0s ease;
-  transition: 0s ease;
-}
-
-.button__number:active {
-  -webkit-filter: brightness(80%);
-          filter: brightness(80%);
+  font-weight: 300;
+  -webkit-transition: 0.7s ease all;
+  -o-transition: 0.7s ease all;
+  transition: 0.7s ease all;
 }
 
 .button__math {
@@ -463,32 +547,13 @@ header {
   -o-transition: 0.7s ease;
   transition: 0.7s ease;
   font-size: 42.5px;
-  font-weight: 400;
-}
-
-.button__math:hover {
-  background-color: #FBC78E;
-  -webkit-transition: 0s ease;
-  -o-transition: 0s ease;
-  transition: 0s ease;
-}
-
-.button__math:active {
-  background-color: #fff;
-  color: #FEA00A;
+  font-weight: 300;
 }
 
 .button__multiply-content {
   display: block;
-  -webkit-transform: rotate(45deg);
-      -ms-transform: rotate(45deg);
-          transform: rotate(45deg);
-  position: relative;
-  z-index: 0;
-}
-
-.button__subtr-content {
-  display: block;
+  font-size: 52.5px;
+  font-weight: 200;
 }
 
 .button__math-active {
@@ -507,7 +572,7 @@ header {
 }
 
 .button__percent {
-  font-weight: 580;
+  font-weight: 464;
 }
 
 @media (min-width: 82.5em) {
@@ -545,6 +610,16 @@ header {
 @media (max-width: 26.5625em) {
   .container {
     background: #000000;
+    -webkit-box-align: end;
+        -ms-flex-align: end;
+            align-items: end;
+  }
+
+  .calc {
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    margin-bottom: 0.3125rem;
+    height: 100%;
   }
 }
 
@@ -630,4 +705,38 @@ header {
       padding-top: calc(0.625rem + 0.75 * (100vw - 18.125rem) / 64.375);
     }
 }
+}
+
+@media (hover: hover) {
+  .button__m:hover {
+    background-color: #939393;
+    -webkit-filter: brightness(80%);
+            filter: brightness(80%);
+    -webkit-transition: 0s ease;
+    -o-transition: 0s ease;
+    transition: 0s ease;
+  }
+
+  .button__control:hover {
+    background-color: #eeeeee;
+    -webkit-transition: 0s ease;
+    -o-transition: 0s ease;
+    transition: 0s ease;
+  }
+
+  .button__number:hover {
+    background-color: #939393;
+    -webkit-filter: brightness(80%);
+            filter: brightness(80%);
+    -webkit-transition: 0s ease;
+    -o-transition: 0s ease;
+    transition: 0s ease;
+  }
+
+  .button__math:hover {
+    background-color: #FBC78E;
+    -webkit-transition: 0s ease;
+    -o-transition: 0s ease;
+    transition: 0s ease;
+  }
 }

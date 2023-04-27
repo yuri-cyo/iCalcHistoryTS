@@ -7,6 +7,10 @@ const calc = new Calc('buttonsCalc', {
 })
 // calc.mathOperations()
 
+calc.btnsTouchNumbers()
+// calc.$el.addEventListener('touchstart', (e)=> {
+// 	navigator.vibrate(100);
+// })
 
 calc.$el.addEventListener('click', (e)=> {
 	if (e.target.closest('.button')) {
@@ -24,13 +28,16 @@ calc.$el.addEventListener('click', (e)=> {
 		// calc.removeLastDot()
 		// calc.numEntryA() //! Запис числа 1
 		// calc.numEntryB() //! Запис числа 2
-		if (calc.varDigitStr.length < calc.numberLimit + 1) {
+		// calc.numbersEntryAorB() //! Запис числа 1 або 2
+
+		if (calc.varDigitStr.length <= calc.numberLimit) {
 			if (calc.varDigitStr.includes('.')) {
-				calc.numbersEntryAorB() //! Запис числа 1 або 2
+			calc.numbersEntryAorB() //! Запис числа 1 або 2
 			} else if (calc.varDigitStr.length < calc.numberLimit) {
 				calc.numbersEntryAorB() //! Запис числа 1 або 2
 			}
 		}
+
 		// calc.removeLastDot()
 		calc.buttonNegative()
 		calc.equalSymbol() //! 1+2+3 FIX PROBLEM! OLD
@@ -43,6 +50,8 @@ calc.$el.addEventListener('click', (e)=> {
 		
 		
 		calc.noNumBEqualNumA() 
+		calc.btnMplus(e.target)
+		calc.formattedDigitM()
 		calc.clearOneSymbol()
 		calc.mathOperations() //! Запуск математичної операції
 		
@@ -83,7 +92,8 @@ calc.$el.addEventListener('click', (e)=> {
 				console.warn('$digit ',calc.$digit.innerHTML)
 				console.warn('varDigitStr ',calc.varDigitStr)
 				console.warn('roundingAfterDot()', calc.roundingAfterDot());
-				console.warn('exponentialRound', calc.exponentialRound);
+				// console.warn('exponentialRound', calc.exponentialRound);
+				console.warn('M+',  calc.m);
 	}
 
 	

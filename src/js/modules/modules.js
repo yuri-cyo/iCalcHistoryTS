@@ -27,11 +27,61 @@ export class Calc {
 
     this.digitCopy = ''
     this.arrDigigt = ['0']
+
+    this.mOn = false
+    this.m = 0 
+    this.$screenM = document.querySelector('.calc__m-screen')
     // console.log('roundingAfterDot()', this.roundingAfterDot());
 	}
 
-  digitStyle() {
-    
+
+  btnsTouchNumbers() {
+    // const btnsNumber = document.querySelectorAll('.button__number')
+    // btnsNumber.forEach( (i)=> {
+    //   i.addEventListener('touchstart', (e)=> {
+    //     i.classList.remove('active-touch-numbers')
+    //     i.classList.add('active-touch-numbers');
+    //   })
+    //     i.addEventListener('animationend', (e)=> {
+    //         i.classList.remove('active-touch-numbers');
+    //     })
+
+
+    // }) 
+    document.body.addEventListener("touchstart", (e)=> { 
+      if (e.target.className.includes("button")){ //! Android Vibration
+        if (e.target.closest('.button')) {
+          if ("vibrate" in navigator) {
+            navigator.vibrate(75);
+          }
+
+        }
+        // e.target.style.backgroundColor = 'red'
+			}
+			let touchColor = "";
+			let className = e.target.className;
+			if (className.includes("button__m")){
+        touchColor = "#737371";
+			}
+			if (className.includes("button__control")){
+        touchColor = "#D9D9D9";
+			}
+			if (className.includes("button__number")){
+        touchColor = "#737373";
+			}
+			if (className.includes("button__math")){
+				touchColor = "#F3C895";
+			}
+			e.target.style.backgroundColor = touchColor;
+			e.target.style.transition = "background-color 0s, opacity 0.5s, transform 0.2s";
+		}, false);
+		document.body.addEventListener("touchend", function(e) { 
+			let className = e.target.className;
+      e.target.style.transition = "background-color 0.5s, opacity 0.5s, transform 0.2s";
+      setTimeout(function(){
+            e.target.style.backgroundColor = "";
+        }, 20);
+		}, false);
   }
 
   buttonACContent() {
@@ -61,7 +111,8 @@ export class Calc {
     this.equalCount = 1
     // this.statuslastDot = false
     this.statusnoNumBEqualNumA = false
-    this.mathBtnsClearActive()
+    this.mathBtnsClearActive();
+    // this.m = 0
     // this.arrDigigt = ['0']
   }
   
@@ -378,18 +429,22 @@ export class Calc {
   noNumBEqualNumA() {  
     if (this.numA !== ''
         && this.symbol !==''
-        && this.numB === ''
-        && this.targetDataSet.equal === '=') {
-        this.numB = this.numA
-        this.mathOperations() 
-        this.numA = this.resultAB
-        // this.digitRender(this.numA)
-        this.varDigitStr = this.numA
+        && this.numB === '') {
+          if (this.targetDataSet.equal === '='
+              || this.targetDataSet.m ==='m+'
+              || this.targetDataSet.m ==='m-') {
+                this.numB = this.numA
+                this.mathOperations() 
+                this.numA = this.resultAB
+                // this.digitRender(this.numA)
+                this.varDigitStr = this.numA
+        
+                this.resultAB = this.numA
+                this.statusnoNumBEqualNumA = true
+                this.equalCount += 1
+                this.mathBtnsClearActive()
 
-        this.resultAB = this.numA
-        this.statusnoNumBEqualNumA = true
-        this.equalCount += 1
-        this.mathBtnsClearActive()
+              }
       }
   }
   
@@ -453,7 +508,8 @@ export class Calc {
 
         // return this.resultAB = parseFloat(this.resultAB).toFixed(6)
         //     .replace(/0+$/g, '').replace(/\.$/g, '')
-        return this.resultAB = this.fnToFixed(this.resultAB)
+        // return this.resultAB = this.fnToFixed(this.resultAB)
+        this.resultAB = this.fnToFixed(this.resultAB)
   }
 
   fnToFixed(num) {
@@ -493,6 +549,19 @@ export class Calc {
 	// digitRender(numberStr) {
   //   this.$digit.innerHTML = numberStr
 	// }
+  formatNumberForDisplay(nubmerStr) {
+    // let str = '1234000.5678';
+    let [integerPart, decimalPart] = nubmerStr.split('.');
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    let formattedStr = decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+    // console.log(formattedStr); // "1 234 000.5678"
+    if (this.lastIndex(nubmerStr.toString()) === '.'
+        || this.lastIndex(nubmerStr.toString()) === ',') {
+      formattedStr += ','
+    }
+    return formattedStr
+  }
+
 
   roundingAfterDot() {
     let returnRound = this.numberLimit - Math.floor(this.varDigitStr).toString().length
@@ -502,37 +571,42 @@ export class Calc {
     return returnRound
   }
 
-  digitRender() {
-    const options = {
-      // useGrouping: true,
-      maximumFractionDigits: 20,
-      // maximumFractionDigits: this.roundingAfterDot(),
-      minimumFractionDigits: 0
-    }
-    if (this.varDigitStr.length <= this.numberLimit) {
-      let formattedNumber = Number(this.varDigitStr).toLocaleString('uk-UA', options)
-      // .replace(',', '.')
-      console.log('varDigitStrvarDigitStrvarDigitStr', this.varDigitStr);
-      if (this.lastIndex(this.varDigitStr) === '.') {
-        // this.$digit.innerHTML = formattedNumber + '.'
-        this.$digit.innerHTML = formattedNumber + ','
-      } else {
-        this.$digit.innerHTML = formattedNumber
+  formattedDigitM() {
+      // let formattedNumber = this.m.toLocaleString('uk-UA', options)
+      // let formattedNumber = this.m.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+      let formattedNumber = this.formatNumberForDisplay(this.m.toString())
+      // console.log('varDigitStrvarDigitStrvarDigitStr', this.m);
+      // if (this.lastIndex(this.m.toString()) === '.' && this.mOn === true) {
+      //    this.$screenM.innerHTML = 'M=' + formattedNumber + ','
+      // } else {
+        // }
+      this.$screenM.innerHTML = 'M=' + formattedNumber
+      if (this.mOn === false) {
+        this.$screenM.innerHTML = ''
       }
+  }
+
+  digitRender() {
+    if (this.varDigitStr.replace(/\./, '').length <= this.numberLimit) {
+      // let formattedNumber = this.varDigitStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+      let formattedNumber = this.formatNumberForDisplay(this.varDigitStr)
+      // console.log('varDigitStrvarDigitStrvarDigitStr', this.varDigitStr);
+      // if (this.lastIndex(this.varDigitStr) === '.') {
+      //   this.$digit.innerHTML = formattedNumber + ','
+      // } else {
+      // }
+      this.$digit.innerHTML = formattedNumber
+      // this.$digit.innerHTML = this.varDigitStr
     } else if (this.varDigitStr.length > this.numberLimit){ //! Форматує результат в науковий формат (число Ейлера або експоненційний формат)
 
       this.$digit.innerHTML = Number(this.varDigitStr).toExponential().replace('e+', 'e')
           let originalLength = this.$digit.innerHTML.length
           const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, 'g')
           let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, '$1').replace(/0+$/g, '')
-          // let result = this.numberLimit - Math.floor(Number(this.$digit.innerHTML.replace(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, '$1'))).length
-          // console.log('resultresultresult', originalLength, formatEtoN.length, Math.floor(+formatEtoN).toString().length);
           let roundingAfterDotExpon = this.numberLimit - (originalLength - formatEtoN.length + Math.floor(+formatEtoN).toString().length)
           console.log('formatEtoN', formatEtoN);
 
-          this.$digit.innerHTML = Number(this.varDigitStr).toExponential(roundingAfterDotExpon).replace(/\.?0+e/g, 'e').replace('e+', 'e')
-
-          this.exponentialRound = roundingAfterDotExpon //! вивід в консоль в файлі script.js
+          this.$digit.innerHTML = Number(this.varDigitStr).toExponential(roundingAfterDotExpon).replace(/\.?0+e/g, 'e').replace('e+', 'e').replace(/\./, ',')
     }
 
     // const container = this.$digit.parentNode
@@ -566,7 +640,6 @@ export class Calc {
   blinkingDigit() {
     this.arrDigigt.push(this.varDigitStr)
     this.arrDigigt = this.arrDigigt.slice(-2)
-    
     console.log('this.arrDigigt', this.arrDigigt);
     
     if (this.arrDigigt[0] === this.arrDigigt[1]) {
@@ -631,6 +704,59 @@ export class Calc {
           }  
       } 
 		}
+  }
+
+  btnMplus(eTarget) {
+    if (eTarget.dataset.m === 'mc') {
+      this.m = 0
+      this.$screenM.innerHTML = ''
+      this.mOn = false
+    }
+    if (eTarget.dataset.m === 'm+') {
+      this.mOn = true
+      // console.log('m+m+m+m+m+', screenM);
+      if (this.numA !== '' && this.numB !== '' && this.symbol !== '') {
+        this.buttonsEqual()
+        this.m = Number(this.m) + Number(this.varDigitStr)
+        this.noNumBEqualNumA()
+      } else {
+        this.m = Number(this.m) + Number(this.varDigitStr)
+      }
+      // if (this.m !== 0) {
+        this.$screenM.innerHTML = this.m
+        this.numA = ''
+        this.numB = ''
+        this.symbol = ''
+      // }
+    }
+    if (eTarget.dataset.m === 'm-') {
+      this.mOn = true
+      if (this.numA !== '' && this.numB !== '' && this.symbol !== '') {
+        this.buttonsEqual()
+        this.m = Number(this.m) - Number(this.varDigitStr)
+        this.noNumBEqualNumA()
+      } else {
+        this.m = Number(this.m) - Number(this.varDigitStr)
+      }
+      // if (this.m !== 0) {
+        this.$screenM.innerHTML = this.m
+        this.numA = ''
+        this.numB = ''
+        this.symbol = ''
+      // }
+    }
+    if (eTarget.dataset.m === 'mr') {
+        if (this.numB === '' && this.symbol === ''){
+          this.numA = this.m
+          this.varDigitStr = '' + this.m
+        } else if (this.numA !== '' && this.symbol !== '') {
+          this.numB = this.m
+          this.varDigitStr = '' + this.m
+        }
+     
+
+    }
+    // this.formattedDigitM()
   }
 
 

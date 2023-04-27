@@ -8,14 +8,21 @@
 			@@include('html/_header.htm',{})
 			<div class="container">
 				<div class="calc">
+					<div class="calc__m-screen">
+						<p data-digit-m></p>
+					</div>
 					<div class="calc__screen">
 						<p data-digit>0</p>
 					</div>
 		
 						<div class="buttons__container" id="buttonsCalc">
+							<div class="button button__m" data-m="mc">mc</div>
+							<div class="button button__m" data-m="m+">m+</div>
+							<div class="button button__m" data-m="m-">m-</div>
+							<div class="button button__m" data-m="mr">mr</div>
+
 							<div class="button button__control" data-clear="ac" >AC</div>
 							<div class="button button__control" data-number="-">±</div>
-							<!-- <div class="button__control" data-negative="-">+/-</div> -->
 							<div class="button button__control button__percent" data-percent="%">%</div>
 	
 							<div class="button button__math" data-math="/">÷</div>
@@ -24,7 +31,7 @@
 							<div class="button button__number" data-number="8">8</div>
 							<div class="button button__number" data-number="9">9</div>
 	
-							<div class="button button__math button__multiply-content" data-math="*">+</div>
+							<div class="button button__math button__multiply-content" data-math="*">×</div>
 	
 							<div class="button button__number" data-number="4">4</div>
 							<div class="button button__number" data-number="5">5</div>

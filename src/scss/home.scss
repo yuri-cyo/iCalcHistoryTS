@@ -42,8 +42,11 @@ $btn-control: #A5A5A5;
 $txt-btn-control: #020202;
 // color hover
 $btn-numbers-click: #737373;
-$btn-control-hover: #D9D9D9;
+$btn-numbers-hover: #939393;
+$btn-control-hover: #eeeeee;
+$btn-control-active: #D9D9D9;
 $btn-math-hover: #FBC78E;
+$btn-math-active: #FBC78E;
 $btn-math-click: #fff;
 
 $applicationScale: 50; //!<================== SCALE %
@@ -57,21 +60,22 @@ $fs-digit: calc(175px / 100 * $applicationScale);
 // }
 $maxWidthCalc: 706px;
 
-$fw-control-button: 500;
+$fw-control-button: 400;
 $fw-control-button-percent: calc($fw-control-button * 1.16);
-$fw-number-button: 400;
-$fw-math-button: 400;
-$fw-digit: 300;
+$fw-number-button: 300;
+$fw-math-button: 300;
+$fw-digit: 200;
 
 // size
 $calc-h: calc(1280px / 100 * $applicationScale);
 $calc-w: calc(720px / 100 * $applicationScale);
 $sz-button: calc(144px / 100 * $applicationScale);
 $lh-control-button: calc(144px / 100 * $applicationScale);
+// $gap: calc(26px / 100 * $applicationScale);
 $gap: calc(26px / 100 * $applicationScale);
 $screen-h: calc(390px / 100 * $applicationScale); // 422px
 $screen-w: calc(654px / 100 * $applicationScale); // 422px
-$screen-padding: calc(35px / 100 * $applicationScale) calc(18px / 100 * $applicationScale);
+$screen-padding: 0 calc(18px / 100 * $applicationScale);
 // $screen-padding: calc(35px / 100 * $applicationScale) 0;
 // animation
 $transition-btn: .7s;
@@ -79,13 +83,15 @@ $transition-btn: .7s;
 
 body {
 	color: #FFFFFF;
-	font-family: 'Montserrat';
 	font-weight: 400;
-	// width: 100%;
-	// min-width: 100vw;
-	// height: 102vh;
 	background: #000000;
 	overflow: hidden;
+	
+	-webkit-user-select: none; /* для iOS та Safari */
+	-moz-user-select: none; /* для Firefox */
+	-ms-user-select: none; /* для Internet Explorer та Edge */
+	user-select: none;
+ 
 	// @media (max-width: em(355)) {
 		
 	// 	min-width: 340px;
@@ -112,29 +118,51 @@ header {
 
 	@media (max-width: em(425)){
 		background: #000000;
+		align-items: end;
 	}
 }		
 
 .calc {
-	display: block;
+	display: flex;
+	// height: 20%;
+
+	flex-direction: column;
 	background-color: $bg-calc;
 	border-radius: calc(($sz-button) / 2);
 	box-shadow: 3px 3px 50px 3px rgba(255, 255, 255, 0.2);
 	padding: $gap;
 	// max-height: 100vh;
 	@media (max-width: em(425)) {
-		// box-shadow:none
-		// height: 100vh;
-	}	
+		box-shadow: none;
+		margin-bottom: rem(5);
+		height: 100%;
+	}
+	
+	&__m-screen {
+		width: 100%;
+		min-height: 1rem;
+		font-size: 1rem;
+		padding: $screen-padding;
+		background-color: $bg-calc;
+	}
 
 	&__screen {
 		min-height: $screen-h;
-		width: 100%;
+		// flex: 1 1 100%;
+		height: 100%;
+		// max-height: $screen-h;
 		max-width: $screen-w;
 		display: flex;
+		// flex: 1 1 auto;
+		// height: 300px;
 		justify-content: flex-end;
 		padding: $screen-padding;
 		align-items: flex-end;
+
+		@media (max-width: em(425)) {
+			// flex: 1 1 auto;
+			// height: 100vh;
+		}
 
 			p { //* циферблат
 				font-size: $fs-digit;
@@ -150,22 +178,47 @@ header {
 .buttons__container {
 	display: grid;
 	grid-template-columns: repeat(4, $sz-button);
-	grid-template-rows: repeat(5, $sz-button);
+	grid-template-rows: repeat(6, $sz-button - 12px);
 	gap: $gap;
 }
+
+
 
 .button {
 	border-radius: calc(($sz-button) / 2);
 	text-align: center;
-	line-height: $lh-control-button;
 	// font-size: $fs-control-button;
 	// font-weight: 400;
+
+	// line-height: $lh-control-button;
+	display: flex;
+	justify-content:center;
+	align-items: center;
 	
 	// щоб текст не виділявся!
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
+	touch-action: none;
+
+	&__m {
+		font-size: $fs-control-button;
+		transition: $transition-btn ease;
+		// border: 2px solid $btn-control;
+		height: 80%;
+		align-self: end;
+		// color: $btn-control;
+		background-color: #2a2a2a;
+
+		@media (hover: hover){
+			&:hover {
+				background-color: $btn-numbers-hover;
+				filter: brightness(80%);
+				transition: 0s ease;
+			}
+		}
+	}
 
 	&__control {
 		color: $txt-btn-control;
@@ -173,32 +226,43 @@ header {
 		transition: $transition-btn ease;
 		font-size: $fs-control-button;
 		font-weight: $fw-control-button;
-	
-		&:hover {
-			background-color: $btn-control-hover;
-			transition: 0s ease;
+		touch-action: none;
+		
+		@media (hover: hover){
+			&:hover {
+				background-color: $btn-control-hover;
+				transition: 0s ease;
+			}
 		}
 	
-		&:active {
-			filter: brightness(80%);
-		}
+		// &:active {
+		// 	// filter: brightness(80%);
+		// 	background-color: $btn-control-active;
+		// 		transition: 0s ease;
+		// 		transition-delay: 2s
+		// }
 	}
 
 	&__number {
 		background-color: $btn-numbers;
 		color: $txt-btn-number-math;
-		transition: $transition-btn ease;
 		font-size: $fs-number-button;
 		font-weight: $fw-number-button;
+		transition: $transition-btn ease all;
+		// transition: 0s all ease;
 	
-		&:hover {
-			background-color: $btn-numbers-click;
-			transition: 0s ease;
+		@media (hover: hover){
+			&:hover {
+				background-color: $btn-numbers-hover;
+				filter: brightness(80%);
+				transition: 0s ease;
+			}
 		}
-	
-		&:active {
-			filter: brightness(80%);
-		}
+		
+		// &:active {
+		// 	// transition: .5s all ease;
+		// 	background-color: $btn-numbers-click;
+		// }
 	}
 
 	&__math {
@@ -209,31 +273,34 @@ header {
 		font-size: $fs-math-button;
 		font-weight: $fw-math-button;
 	
-		&:hover {
-			background-color: $btn-math-hover;
-			transition: 0s ease;
+		@media (hover: hover){
+			&:hover {
+				background-color: $btn-math-hover;
+				transition: 0s ease;
+			}
 		}
-		&:active {
-			background-color: $btn-math-click;
-			color: #FEA00A;
-		}
+		// &:active {
+		// 	background-color: $btn-math-active;
+		// 	color: #FEA00A;
+		// 	transition: 0s ease;
+		// }
 	}
 
 	&__multiply-content {
 		display: block;
-		transform: rotate(45deg);
-		position: relative;
-		z-index: 0;
+		font-size: calc($fs-math-button + 10px);
+		font-weight: 200;
+		// z-index: 0;
 	}
 
 	&__subtr-content {
-		display: block;
+		// display: block;
 
 	}
 	
 	&__math-active {
 		color: #FEA00A;
-		background-color: #fff;
+		background-color: $btn-math-click;
 	}
 	
 	&__zero {
@@ -248,8 +315,3 @@ header {
 }
 
 
-
-
-	
-
-	
