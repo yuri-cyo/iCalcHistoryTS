@@ -160,6 +160,7 @@ header {
 		align-items: flex-end;
 
 		@media (max-width: em(425)) {
+			min-height: 60px;
 			// flex: 1 1 auto;
 			// height: 100vh;
 		}

@@ -621,6 +621,10 @@ header {
     margin-bottom: 0.3125rem;
     height: 100%;
   }
+
+  .calc__screen {
+    min-height: 60px;
+  }
 }
 
 @media (max-width: 18.125em) {

@@ -40,7 +40,7 @@ calc.$el.addEventListener('click', (e)=> {
 
 		// calc.removeLastDot()
 		calc.buttonNegative()
-		calc.equalSymbol() //! 1+2+3 FIX PROBLEM! OLD
+		// calc.equalSymbol() //! 1+2+3 FIX PROBLEM! OLD
 		
 		if (calc.targetDataSet.equal === '=') {
 			calc.buttonsEqual() //! =

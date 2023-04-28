@@ -323,7 +323,8 @@
                 console.log("formatEtoN", formatEtoN);
                 this.$digit.innerHTML = Number(this.varDigitStr).toExponential(roundingAfterDotExpon).replace(/\.?0+e/g, "e").replace("e+", "e").replace(/\./, ",");
             }
-            const container = document.querySelector(".calc__screen");
+            //! Динамічне зменшення / збільшення розміру шрифту в циферблаті
+                        const container = document.querySelector(".calc__screen");
             const paddingLeftСontainer = parseFloat(getComputedStyle(container).paddingLeft);
             const paddingRightСontainer = parseFloat(getComputedStyle(container).paddingRight);
             const widthContainer = container.offsetWidth - paddingLeftСontainer - paddingRightСontainer;
@@ -394,27 +395,24 @@
                 this.$screenM.innerHTML = "";
                 this.mOn = false;
             }
-            if ("m+" === eTarget.dataset.m) {
+            if ("m+" === eTarget.dataset.m || "m-" === eTarget.dataset.m) {
                 this.mOn = true;
-                if ("" !== this.numA && "" !== this.numB && "" !== this.symbol) {
+                if ("" !== this.numA && "" !== this.numB && "" !== this.symbol && 1 === this.equalCount) {
                     this.buttonsEqual();
-                    this.m = Number(this.m) + Number(this.varDigitStr);
-                    this.noNumBEqualNumA();
-                } else this.m = Number(this.m) + Number(this.varDigitStr);
-                this.$screenM.innerHTML = this.m;
-                this.numA = "";
-                this.numB = "";
-                this.symbol = "";
-            }
-            if ("m-" === eTarget.dataset.m) {
-                this.mOn = true;
-                if ("" !== this.numA && "" !== this.numB && "" !== this.symbol) {
-                    this.buttonsEqual();
-                    this.m = Number(this.m) - Number(this.varDigitStr);
-                    this.noNumBEqualNumA();
-                } else this.m = Number(this.m) - Number(this.varDigitStr);
-                this.$screenM.innerHTML = this.m;
-                this.numA = "";
+                    if ("m+" === eTarget.dataset.m) this.m = Number(this.m) + Number(this.varDigitStr);
+                    if ("m-" === eTarget.dataset.m) this.m = Number(this.m) - Number(this.varDigitStr);
+                    if ("" !== this.numA && "" !== this.symbol && "" === this.numB && this.equalCount > 1) {
+                        this.numB = "";
+                        this.symbol = "";
+                        this.noNumBEqualNumA();
+                    }
+                    this.$screenM.innerHTML = this.m;
+                } else {
+                    if ("m+" === eTarget.dataset.m) this.m = Number(this.m) + Number(this.varDigitStr);
+                    if ("m-" === eTarget.dataset.m) this.m = Number(this.m) - Number(this.varDigitStr);
+                    this.$screenM.innerHTML = this.m;
+                }
+                this.numA = this.m;
                 this.numB = "";
                 this.symbol = "";
             }
@@ -442,9 +440,7 @@
              else if (calc.varDigitStr.length < calc.numberLimit) calc.numbersEntryAorB();
  //! Запис числа 1 або 2
                         calc.buttonNegative();
-            calc.equalSymbol();
- //! 1+2+3 FIX PROBLEM! OLD
-                        if ("=" === calc.targetDataSet.equal) calc.buttonsEqual();
+            if ("=" === calc.targetDataSet.equal) calc.buttonsEqual();
  //! =
                         calc.percentBtn(e.target);
             calc.noNumBEqualNumA();

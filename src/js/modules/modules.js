@@ -572,14 +572,7 @@ export class Calc {
   }
 
   formattedDigitM() {
-      // let formattedNumber = this.m.toLocaleString('uk-UA', options)
-      // let formattedNumber = this.m.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
       let formattedNumber = this.formatNumberForDisplay(this.m.toString())
-      // console.log('varDigitStrvarDigitStrvarDigitStr', this.m);
-      // if (this.lastIndex(this.m.toString()) === '.' && this.mOn === true) {
-      //    this.$screenM.innerHTML = 'M=' + formattedNumber + ','
-      // } else {
-        // }
       this.$screenM.innerHTML = 'M=' + formattedNumber
       if (this.mOn === false) {
         this.$screenM.innerHTML = ''
@@ -588,16 +581,10 @@ export class Calc {
 
   digitRender() {
     if (this.varDigitStr.replace(/\./, '').length <= this.numberLimit) {
-      // let formattedNumber = this.varDigitStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
       let formattedNumber = this.formatNumberForDisplay(this.varDigitStr)
-      // console.log('varDigitStrvarDigitStrvarDigitStr', this.varDigitStr);
-      // if (this.lastIndex(this.varDigitStr) === '.') {
-      //   this.$digit.innerHTML = formattedNumber + ','
-      // } else {
-      // }
       this.$digit.innerHTML = formattedNumber
-      // this.$digit.innerHTML = this.varDigitStr
     } else if (this.varDigitStr.length > this.numberLimit){ //! Форматує результат в науковий формат (число Ейлера або експоненційний формат)
+    // } else if (Math.trunc(Number(this.varDigitStr)).length >= this.numberLimit){
 
       this.$digit.innerHTML = Number(this.varDigitStr).toExponential().replace('e+', 'e')
           let originalLength = this.$digit.innerHTML.length
@@ -609,17 +596,13 @@ export class Calc {
           this.$digit.innerHTML = Number(this.varDigitStr).toExponential(roundingAfterDotExpon).replace(/\.?0+e/g, 'e').replace('e+', 'e').replace(/\./, ',')
     }
 
-    // const container = this.$digit.parentNode
+    //! Динамічне зменшення / збільшення розміру шрифту в циферблаті
     const container = document.querySelector('.calc__screen')
     const paddingLeftСontainer = parseFloat(getComputedStyle(container).paddingLeft);
     const paddingRightСontainer = parseFloat(getComputedStyle(container).paddingRight);
     const widthContainer = container.offsetWidth - paddingLeftСontainer - paddingRightСontainer
     console.log('widthContainer', widthContainer);
     console.log('this.$digit', this.$digit.offsetWidth);
-    // console.log('container.offsetWidth', container.offsetWidth - container.paddingLeft - container.paddingRight);
-    // const text = document.querySelector('.text');
-    // const originalFontSize$Digit = getComputedStyle(this.$digit).getPropertyValue('font-size')
-    // console.log('originalFontSize', originalFontSize);
     let fontSize = parseInt(window.getComputedStyle(this.$digit).fontSize);
     
     while (this.$digit.offsetWidth > widthContainer && fontSize >= 48) {
@@ -633,9 +616,6 @@ export class Calc {
   
 	}
 
-  // returnDigit() {
-  //   return this.$digit.innerHTML.replace(/[^0-9,]+/g, '').replace(/,/g, '.')
-  // }
 
   blinkingDigit() {
     this.arrDigigt.push(this.varDigitStr)
@@ -712,38 +692,33 @@ export class Calc {
       this.$screenM.innerHTML = ''
       this.mOn = false
     }
-    if (eTarget.dataset.m === 'm+') {
+    if (eTarget.dataset.m === 'm+' || eTarget.dataset.m === 'm-') {
       this.mOn = true
-      // console.log('m+m+m+m+m+', screenM);
-      if (this.numA !== '' && this.numB !== '' && this.symbol !== '') {
+      if (this.numA !== '' 
+      && this.numB !== '' 
+      && this.symbol !== ''
+      && this.equalCount === 1) {
         this.buttonsEqual()
-        this.m = Number(this.m) + Number(this.varDigitStr)
-        this.noNumBEqualNumA()
-      } else {
-        this.m = Number(this.m) + Number(this.varDigitStr)
-      }
-      // if (this.m !== 0) {
+        if (eTarget.dataset.m === 'm+') this.m = Number(this.m) + Number(this.varDigitStr)
+        if (eTarget.dataset.m === 'm-') this.m = Number(this.m) - Number(this.varDigitStr)
+        
+        if (this.numA !== '' 
+            && this.symbol !== '' 
+            && this.numB === ''
+            && this.equalCount > 1) {
+              this.numB = ''
+              this.symbol = ''
+              this.noNumBEqualNumA()
+        }
         this.$screenM.innerHTML = this.m
-        this.numA = ''
+      } else {
+        if (eTarget.dataset.m === 'm+') this.m = Number(this.m) + Number(this.varDigitStr)
+        if (eTarget.dataset.m === 'm-') this.m = Number(this.m) - Number(this.varDigitStr)
+        this.$screenM.innerHTML = this.m
+      }
+        this.numA = this.m
         this.numB = ''
         this.symbol = ''
-      // }
-    }
-    if (eTarget.dataset.m === 'm-') {
-      this.mOn = true
-      if (this.numA !== '' && this.numB !== '' && this.symbol !== '') {
-        this.buttonsEqual()
-        this.m = Number(this.m) - Number(this.varDigitStr)
-        this.noNumBEqualNumA()
-      } else {
-        this.m = Number(this.m) - Number(this.varDigitStr)
-      }
-      // if (this.m !== 0) {
-        this.$screenM.innerHTML = this.m
-        this.numA = ''
-        this.numB = ''
-        this.symbol = ''
-      // }
     }
     if (eTarget.dataset.m === 'mr') {
         if (this.numB === '' && this.symbol === ''){
@@ -756,7 +731,6 @@ export class Calc {
      
 
     }
-    // this.formattedDigitM()
   }
 
 
