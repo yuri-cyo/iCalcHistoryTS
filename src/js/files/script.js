@@ -1,6 +1,11 @@
 import { Calc } from "../modules/modules.js"
+import { setSize } from "../modules/style.js"
 
 /// ========================= 
+// const style = new Style('selector', {
+	
+// })  
+// setSize()
 
 const calc = new Calc('buttonsCalc', {
 	numberLimit: 9
@@ -23,6 +28,7 @@ calc.$el.addEventListener('click', (e)=> {
 			
 		}
 		calc.symbolEntry()
+		calc.fixMBtns(e.target)
 		
 		
 		// calc.removeLastDot()
@@ -84,6 +90,7 @@ calc.$el.addEventListener('click', (e)=> {
 				console.log('numB = ' + calc.numB);
 				console.log('resultAB = ' + calc.resultAB)
 				console.log('equalCount = ' + calc.equalCount)
+				console.log('countMbtns = ' + calc.countMbtns)
 				console.log('returnAorB  ' + calc.returnAorB)
 				console.log('numAB()  ' + calc.numAB())
 				console.warn('calc.negativeCount ' + calc.negativeCount);

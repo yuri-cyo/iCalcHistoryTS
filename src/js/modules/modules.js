@@ -30,6 +30,7 @@ export class Calc {
 
     this.mOn = false
     this.m = 0 
+    this.countMbtns = 1
     this.$screenM = document.querySelector('.calc__m-screen')
     // console.log('roundingAfterDot()', this.roundingAfterDot());
 	}
@@ -200,7 +201,6 @@ export class Calc {
   numbersEntryAorB() {
     this.AorB(this.targetDataSet.number, '+')
     console.error('numAB() ' + this.numAB())
-    
     // this.statusnoNumBEqualNumA = false
   }
 
@@ -686,13 +686,26 @@ export class Calc {
 		}
   }
 
+  fixMBtns(eTarget) {
+    if (this.countMbtns > 1 && eTarget.dataset.number) {
+      this.numA = ''
+      this.symbol = ''
+      this.numB = ''
+    }
+  }
+
   btnMplus(eTarget) {
+    
+    if (eTarget.dataset.number || eTarget.dataset.math) {
+      this.countMbtns = 1
+    }
     if (eTarget.dataset.m === 'mc') {
       this.m = 0
       this.$screenM.innerHTML = ''
       this.mOn = false
     }
     if (eTarget.dataset.m === 'm+' || eTarget.dataset.m === 'm-') {
+      this.countMbtns += 1
       this.mOn = true
       if (this.numA !== '' 
       && this.numB !== '' 
@@ -717,6 +730,7 @@ export class Calc {
         this.$screenM.innerHTML = this.m
       }
         this.numA = this.m
+        // this.numA = ''
         this.numB = ''
         this.symbol = ''
     }

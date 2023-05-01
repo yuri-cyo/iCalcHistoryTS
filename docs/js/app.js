@@ -35,6 +35,7 @@
             this.arrDigigt = [ "0" ];
             this.mOn = false;
             this.m = 0;
+            this.countMbtns = 1;
             this.$screenM = document.querySelector(".calc__m-screen");
         }
         btnsTouchNumbers() {
@@ -389,13 +390,22 @@
                 }
             }
         }
+        fixMBtns(eTarget) {
+            if (this.countMbtns > 1 && eTarget.dataset.number) {
+                this.numA = "";
+                this.symbol = "";
+                this.numB = "";
+            }
+        }
         btnMplus(eTarget) {
+            if (eTarget.dataset.number || eTarget.dataset.math) this.countMbtns = 1;
             if ("mc" === eTarget.dataset.m) {
                 this.m = 0;
                 this.$screenM.innerHTML = "";
                 this.mOn = false;
             }
             if ("m+" === eTarget.dataset.m || "m-" === eTarget.dataset.m) {
+                this.countMbtns += 1;
                 this.mOn = true;
                 if ("" !== this.numA && "" !== this.numB && "" !== this.symbol && 1 === this.equalCount) {
                     this.buttonsEqual();
@@ -425,6 +435,7 @@
             }
         }
     }
+    document.querySelector(".buttons__container");
     const calc = new Calc("buttonsCalc", {
         numberLimit: 9
     });
@@ -436,6 +447,7 @@
             console.warn("press targetttttttttttttttttttttttttttttttt!!! " + calc.targetDataSet);
             if ("string" !== typeof calc.targetDataSet) ;
             calc.symbolEntry();
+            calc.fixMBtns(e.target);
             if (calc.varDigitStr.length <= calc.numberLimit) if (calc.varDigitStr.includes(".")) calc.numbersEntryAorB(); //! Запис числа 1 або 2
              else if (calc.varDigitStr.length < calc.numberLimit) calc.numbersEntryAorB();
  //! Запис числа 1 або 2
@@ -466,6 +478,7 @@
             console.log("numB = " + calc.numB);
             console.log("resultAB = " + calc.resultAB);
             console.log("equalCount = " + calc.equalCount);
+            console.log("countMbtns = " + calc.countMbtns);
             console.log("returnAorB  " + calc.returnAorB);
             console.log("numAB()  " + calc.numAB());
             console.warn("calc.negativeCount " + calc.negativeCount);

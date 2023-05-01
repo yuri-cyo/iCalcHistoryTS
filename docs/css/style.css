@@ -623,7 +623,14 @@ header {
   }
 
   .calc__screen {
-    min-height: 60px;
+    min-height: 90px;
+  }
+
+  .buttons__container {
+    width: 100%;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
   }
 }
 
