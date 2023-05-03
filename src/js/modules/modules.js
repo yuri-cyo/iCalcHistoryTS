@@ -695,6 +695,13 @@ export class Calc {
   }
 
   btnMplus(eTarget) {
+
+    const btnsMoperations = ()=> {
+      if (eTarget.dataset.m === 'm+') {
+        this.m = Number(this.m) + Number(this.varDigitStr)
+        this.m = this.fnToFixed(this.m)
+      }
+    }
     
     if (eTarget.dataset.number || eTarget.dataset.math) {
       this.countMbtns = 1
@@ -712,8 +719,7 @@ export class Calc {
       && this.symbol !== ''
       && this.equalCount === 1) {
         this.buttonsEqual()
-        if (eTarget.dataset.m === 'm+') this.m = Number(this.m) + Number(this.varDigitStr)
-        if (eTarget.dataset.m === 'm-') this.m = Number(this.m) - Number(this.varDigitStr)
+        btnsMoperations()
         
         if (this.numA !== '' 
             && this.symbol !== '' 
@@ -725,8 +731,7 @@ export class Calc {
         }
         this.$screenM.innerHTML = this.m
       } else {
-        if (eTarget.dataset.m === 'm+') this.m = Number(this.m) + Number(this.varDigitStr)
-        if (eTarget.dataset.m === 'm-') this.m = Number(this.m) - Number(this.varDigitStr)
+        btnsMoperations()
         this.$screenM.innerHTML = this.m
       }
         this.numA = this.m

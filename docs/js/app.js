@@ -398,6 +398,12 @@
             }
         }
         btnMplus(eTarget) {
+            const btnsMoperations = () => {
+                if ("m+" === eTarget.dataset.m) {
+                    this.m = Number(this.m) + Number(this.varDigitStr);
+                    this.m = this.fnToFixed(this.m);
+                }
+            };
             if (eTarget.dataset.number || eTarget.dataset.math) this.countMbtns = 1;
             if ("mc" === eTarget.dataset.m) {
                 this.m = 0;
@@ -409,8 +415,7 @@
                 this.mOn = true;
                 if ("" !== this.numA && "" !== this.numB && "" !== this.symbol && 1 === this.equalCount) {
                     this.buttonsEqual();
-                    if ("m+" === eTarget.dataset.m) this.m = Number(this.m) + Number(this.varDigitStr);
-                    if ("m-" === eTarget.dataset.m) this.m = Number(this.m) - Number(this.varDigitStr);
+                    btnsMoperations();
                     if ("" !== this.numA && "" !== this.symbol && "" === this.numB && this.equalCount > 1) {
                         this.numB = "";
                         this.symbol = "";
@@ -418,8 +423,7 @@
                     }
                     this.$screenM.innerHTML = this.m;
                 } else {
-                    if ("m+" === eTarget.dataset.m) this.m = Number(this.m) + Number(this.varDigitStr);
-                    if ("m-" === eTarget.dataset.m) this.m = Number(this.m) - Number(this.varDigitStr);
+                    btnsMoperations();
                     this.$screenM.innerHTML = this.m;
                 }
                 this.numA = this.m;
