@@ -22,7 +22,7 @@ calc.$el.addEventListener('click', (e)=> {
 		// console.error('includec button');
 		calc.targetDataSet = e.target.dataset
 		calc.target = e.target
-
+		
 		console.warn('press targetttttttttttttttttttttttttttttttt!!! ' + calc.targetDataSet)
 		if (typeof calc.targetDataSet !== 'string') {
 			
@@ -35,18 +35,18 @@ calc.$el.addEventListener('click', (e)=> {
 		// calc.numEntryA() //! Запис числа 1
 		// calc.numEntryB() //! Запис числа 2
 		// calc.numbersEntryAorB() //! Запис числа 1 або 2
-
+		
 		if (calc.varDigitStr.length <= calc.numberLimit) {
 			if (calc.varDigitStr.includes('.')) {
-			calc.numbersEntryAorB() //! Запис числа 1 або 2
+				calc.numbersEntryAorB() //! Запис числа 1 або 2
 			} else if (calc.varDigitStr.length < calc.numberLimit) {
 				calc.numbersEntryAorB() //! Запис числа 1 або 2
 			}
 		}
-
+		
 		// calc.removeLastDot()
 		calc.buttonNegative()
-		// calc.equalSymbol() //! 1+2+3 FIX PROBLEM! OLD
+		calc.equalSymbol() //! 1+2+3 FIX PROBLEM!
 		
 		if (calc.targetDataSet.equal === '=') {
 			calc.buttonsEqual() //! =
@@ -64,10 +64,13 @@ calc.$el.addEventListener('click', (e)=> {
 		calc.buttonAC()
 		
 		
-		calc.fixDotWithoutZero()
+		
 		calc.clearAfterEqualPressNum()
 		calc.buttonACContent()
-		calc.digitRender()
+		calc.fixDotWithoutZero(e.target)
+
+
+		calc.digitRender(e.target) //! DIGIT RENDER
 		
 		calc.blinkingDigit()
 		// calc.limitNumbers()
@@ -88,6 +91,7 @@ calc.$el.addEventListener('click', (e)=> {
 				console.log('numA = ' + calc.numA);
 				console.log('symbol = ' + calc.symbol);
 				console.log('numB = ' + calc.numB);
+				console.log('originResultAB = ' + calc.originResultAB)
 				console.log('resultAB = ' + calc.resultAB)
 				console.log('equalCount = ' + calc.equalCount)
 				console.log('countMbtns = ' + calc.countMbtns)

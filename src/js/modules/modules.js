@@ -20,6 +20,7 @@ export class Calc {
 		this.symbol = ''
 		this.numB = ''
 		this.resultAB = ''
+    this.originResultAB = ''
     this.returnAorB = ''
     // this.statuslastDot = false
     // this.numberAfterDot = null
@@ -454,54 +455,57 @@ export class Calc {
       switch (this.symbol) {
         case '+':
           this.resultAB = Number(this.numA) + Number(this.numB)
-          this.foFixedNumFloat()
-          // this.limitResultAB()
-          // this.resultAB = parseFloat(this.resultAB).toFixed(10)
-          //   .replace(/0+$/g, '').replace(/\.$/g, '')
+          this.foFixedNumFloat() //! ??? (увімкнути якщо результат глючить)
           break
       case '-':
           this.resultAB = Number(this.numA) - Number(this.numB)
           this.foFixedNumFloat()
-          // this.limitResultAB()
           break
       case '*':
         this.resultAB = Number(this.numA) * Number(this.numB)
         this.foFixedNumFloat()
-        // this.limitResultAB()
           break
       case '/':
         this.resultAB = Number(this.numA) / Number(this.numB)
         this.foFixedNumFloat()
-        // this.limitResultAB()
           break
       }
     }
   }
 
-  limitResultAB() {
-    // console.log('resultAB.toString()', this.resultAB.toString().length);
-    if (this.varDigitStr.toString().length > this.numberLimit) {
-      this.varDigitStr = Number(this.varDigitStr).toExponential(this.roundingAfterDot())
-      this.isExponential = true
-      // this.resultAB = 'error'
-      // if (this.numA === 'error' 
-      //     || this.numB === 'error'
-      //     || this.numA === NaN
-      //     || this.numB === NaN) {
-      //   this.clearVars()
-      // }
-      // console.log('toExponential');
-    } else {
-      this.isExponential = false
-    }
-  }
 
   foFixedNumFloat() {
-    let intDigitLength = parseInt(this.varDigitStr) + '';
-    intDigitLength = intDigitLength.length
-    this.resultdigitLengthFloat = this.varDigitStr.length - intDigitLength
-    this.resultdigitLengthFloat = this.resultdigitLengthFloat + ''
-    if (this.varDigitStr.includes('.')) this.resultdigitLengthFloat;
+    // if (this.varDigitStr.toString().replace(/[^0]/g, '').length >= this.numberLimit - 1) {
+    //   return
+    // } else {
+      
+    // }
+
+    // if (this.resultAB.length > this.numberLimit) return
+    // return
+
+    // let intDigitLength = parseInt(this.varDigitStr) + '';
+    // intDigitLength = intDigitLength.length
+    // this.resultdigitLengthFloat = this.varDigitStr.length - intDigitLength
+    // this.resultdigitLengthFloat = this.resultdigitLengthFloat + ''
+    // if (this.varDigitStr.includes('.')) this.resultdigitLengthFloat;
+
+    this.originResultAB = this.resultAB
+    this.resultAB = this.fnToFixed(this.resultAB)
+    if (Number(this.originResultAB) > 0 && Number(this.resultAB) == 0) {
+      // return
+      
+      // let originalLength = this.$digit.innerHTML.length
+      
+      
+      this.resultAB = this.originResultAB.toExponential(this.numberLimit)
+      const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, 'g')
+      let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, '$1')
+      let symbolsE = this.resultAB.toString().length - formatEtoN.length //! К-сть символів  до Е 1234(e-2)
+      this.resultAB = this.originResultAB.toExponential(this.numberLimit - symbolsE)
+      console.log('formatEtoNformatEtoN', formatEtoN);
+
+    } 
 
     console.error('this.resultdigitLengthFloat ' + this.resultdigitLengthFloat);
     console.error(this.resultdigitLengthFloat);
@@ -509,7 +513,13 @@ export class Calc {
         // return this.resultAB = parseFloat(this.resultAB).toFixed(6)
         //     .replace(/0+$/g, '').replace(/\.$/g, '')
         // return this.resultAB = this.fnToFixed(this.resultAB)
-        this.resultAB = this.fnToFixed(this.resultAB)
+        // this.resultAB = this.resultAB
+        // if (this.resultAB.toString().replace(/[^0]/g, '').length > this.numberLimit) {
+        //   this.resultAB = this.fnToFixed(this.resultAB)
+
+        // } 
+        // else if (this.resultAB === '') return
+
   }
 
   fnToFixed(num) {
@@ -531,19 +541,24 @@ export class Calc {
     // }
   }
   
-  fixDotWithoutZero() {
-    if (this.numA === '.') {
+  fixDotWithoutZero(eTarget) {
+    if (this.numA == '.') {
       this.numA = '0.'
       // this.digitRender('0.')
       this.varDigitStr = '0.'
       this.returnAorB = '0.'
     }
-    if (this.numB === '.') {
+    if (this.numB == '.') {
       this.numB = '0.'
       // this.digitRender('0.')
       this.varDigitStr = '0.'
       this.returnAorB = '0.'
     }
+    console.log('fixDotWithoutZerofixDotWithoutZero');
+    if (this.arrDigigt[1] === '.') {
+      this.numA = '0.'
+    }
+    
   }
   
 	// digitRender(numberStr) {
@@ -552,7 +567,7 @@ export class Calc {
   formatNumberForDisplay(nubmerStr) {
     // let str = '1234000.5678';
     let [integerPart, decimalPart] = nubmerStr.split('.');
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); //! ставить пробіли "1 234 000.5678"
     let formattedStr = decimalPart ? `${integerPart},${decimalPart}` : integerPart;
     // console.log(formattedStr); // "1 234 000.5678"
     if (this.lastIndex(nubmerStr.toString()) === '.'
@@ -565,8 +580,9 @@ export class Calc {
 
   roundingAfterDot() {
     let returnRound = this.numberLimit - Math.floor(this.varDigitStr).toString().length
+    console.log('returnRound', `${this.numberLimit } - ${Math.floor(this.varDigitStr).toString().length}`);
     if (returnRound <= 0) {
-      returnRound = 1
+      returnRound = 0
     }
     return returnRound
   }
@@ -579,22 +595,50 @@ export class Calc {
       }
   }
 
-  digitRender() {
-    if (this.varDigitStr.replace(/\./, '').length <= this.numberLimit) {
+
+
+  digitRender(eTarget) {
+    this.varDigitStr = this.varDigitStr.toString()
+    // this.varDigitStr = this.fnToFixed(this.varDigitStr)
+      // if (this.varDigitStr.replace(/[^0]/g, '').length >= this.numberLimit) {
+      //   return
+      // } else {
+      //   this.varDigitStr = this.fnToFixed(this.varDigitStr)
+      // }
+      // if (eTarget.dataset.math
+      //     || eTarget.dataset.equal) {
+      //       // if (this.varDigitStr.replace(/[^0]/g, '').length >= this.numberLimit) {
+      //       //   return
+      //       // } else {
+      //         // this.varDigitStr = this.fnToFixed(this.varDigitStr)
+      //       // }
+      //       // this.varDigitStr = this.fnToFixed(this.varDigitStr)
+      //     }
+          console.log('nuuuuls', this.varDigitStr.replace(/[^0]/g, '').length);
+      // if (this.varDigitStr >= this.numberLimit) this.varDigitStr = this.fnToFixed(this.varDigitStr)
+    // if (this.varDigitStr.replace(/[^0]/g, '').length >= this.numberLimit - 1) {
+    //   console.log('000000', this.varDigitStr.replace(/[^0]/g, '').length >= this.numberLimit - 1);
+      
+    // } else {
+    // }
+    if (this.varDigitStr.replace(/\./, '').length <= this.numberLimit 
+        // || this.varDigitStr.replace(/[^0]/g, '').length >= this.numberLimit
+        ) {
       let formattedNumber = this.formatNumberForDisplay(this.varDigitStr)
       this.$digit.innerHTML = formattedNumber
-    } else if (this.varDigitStr.length > this.numberLimit){ //! Форматує результат в науковий формат (число Ейлера або експоненційний формат)
-    // } else if (Math.trunc(Number(this.varDigitStr)).length >= this.numberLimit){
+    } else this.$digit.innerHTML = this.varDigitStr.replace(/\./, ',')
+    // else if (this.varDigitStr.length > this.numberLimit){ //! Форматує результат в науковий формат (число Ейлера або експоненційний формат)
 
-      this.$digit.innerHTML = Number(this.varDigitStr).toExponential().replace('e+', 'e')
-          let originalLength = this.$digit.innerHTML.length
-          const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, 'g')
-          let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, '$1').replace(/0+$/g, '')
-          let roundingAfterDotExpon = this.numberLimit - (originalLength - formatEtoN.length + Math.floor(+formatEtoN).toString().length)
-          console.log('formatEtoN', formatEtoN);
+    //   this.$digit.innerHTML = Number(this.varDigitStr).toExponential().replace('e+', 'e')
+    //       let originalLength = this.$digit.innerHTML.length
+    //       const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, 'g')
+    //       let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, '$1').replace(/0+$/g, '')
+    //       let roundingAfterDotExpon = this.numberLimit - (originalLength - formatEtoN.length + Math.floor(+formatEtoN).toString().length)
+    //       console.log(`roundingAfterDotExpon ${this.numberLimit} - (${originalLength} - ${formatEtoN.length} + ${Math.floor(+formatEtoN).toString().length})`);
+    //       console.log('roundingAfterDotExpon', roundingAfterDotExpon);
 
-          this.$digit.innerHTML = Number(this.varDigitStr).toExponential(roundingAfterDotExpon).replace(/\.?0+e/g, 'e').replace('e+', 'e').replace(/\./, ',')
-    }
+    //       this.$digit.innerHTML = Number(this.varDigitStr).toExponential(roundingAfterDotExpon).replace(/\.?0+e/g, 'e').replace('e+', 'e').replace(/\./, ',')
+    // }
 
     //! Динамічне зменшення / збільшення розміру шрифту в циферблаті
     const container = document.querySelector('.calc__screen')
@@ -616,7 +660,6 @@ export class Calc {
   
 	}
 
-
   blinkingDigit() {
     this.arrDigigt.push(this.varDigitStr)
     this.arrDigigt = this.arrDigigt.slice(-2)
@@ -630,57 +673,34 @@ export class Calc {
     }
   }
   
-  trueAllVars() {
-    if (this.numA !== ''
-    && this.numB !== ''
-    && this.symbol !== '') {
-      return true
-    }
-  }
-
   percentBtn(eTarget) { //! кнопки і операції => 10, %, =0.1 (numA = numA / 100)
-    const equalBtn = document.querySelector('[data-equal]')
     if (eTarget.dataset.percent === '%') {
       if (this.numA !== '' && this.numB === '') { 
 
           if (this.symbol === '') {
             this.numA = this.fnToFixed(this.numA / 100)
-            // this.digitRender(this.numA)
             this.varDigitStr = this.numA
           }
 
           if (this.symbol === '+' || this.symbol === '-') { //! кнопки і операції => 10, + or -, % (this.numB = this.numA / 100 * this.numA)
             this.numB = this.fnToFixed(this.numA / 100 * this.numA)
-            // this.numB = this.numA / 100 * this.numA
-            
-            // this.numA = this.numA / 100
-            // this.digitRender(this.numB)
             this.varDigitStr = this.numB
-            console.log('if percent', 1);
           }  
 
           if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 10, * or /, % (this.numB = this.numA / 100)
             this.numB = this.fnToFixed(this.numA / 100)
-            // this.numA = this.numA / 100
-          // this.digitRender(this.numB)
-          this.varDigitStr = this.numB
-          console.log('if percent', 2);
-          }
+            this.varDigitStr = this.numB
+            }
       } else if (this.numA !== '' && this.numB !== '') {
 
           if (this.symbol === '+' || this.symbol === '-'){ //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
             this.numB = this.fnToFixed(this.numA / 100 * this.numB)
-            // this.numA = this.numA / 100
-            // this.digitRender(this.numB)
             this.varDigitStr = this.numB
-            console.log('if percent', 3);
           }  
 
           if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
             this.numB = this.fnToFixed(this.numB / 100)
-            // this.digitRender(this.numB)
             this.varDigitStr = this.numB
-            console.log('if percent', 4);
           }  
       } 
 		}
