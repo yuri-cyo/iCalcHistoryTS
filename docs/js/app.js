@@ -266,15 +266,7 @@
         foFixedNumFloat() {
             this.originResultAB = this.resultAB;
             this.resultAB = this.fnToFixed(this.resultAB);
-            if (Number(this.originResultAB) > 0 && 0 == Number(this.resultAB)) {
-                this.resultAB = this.originResultAB.toExponential(this.numberLimit);
-                const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, "g");
-                let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, "$1");
-                let symbolsE = this.resultAB.toString().length - formatEtoN.length;
- //! К-сть символів  до Е 1234(e-2)
-                                this.resultAB = this.originResultAB.toExponential(this.numberLimit - symbolsE);
-                console.log("formatEtoNformatEtoN", formatEtoN);
-            }
+            if (Number(this.originResultAB) > 0 && 0 == Number(this.resultAB)) ;
             console.error("this.resultdigitLengthFloat " + this.resultdigitLengthFloat);
             console.error(this.resultdigitLengthFloat);
         }
@@ -321,7 +313,7 @@
             if (this.varDigitStr.replace(/\./, "").length <= this.numberLimit) {
                 let formattedNumber = this.formatNumberForDisplay(this.varDigitStr);
                 this.$digit.innerHTML = formattedNumber;
-            } else this.$digit.innerHTML = this.varDigitStr.replace(/\./, ",");
+            }
             //! Динамічне зменшення / збільшення розміру шрифту в циферблаті
                         const container = document.querySelector(".calc__screen");
             const paddingLeftСontainer = parseFloat(getComputedStyle(container).paddingLeft);
