@@ -209,7 +209,6 @@ body::after {
   left: 0;
   opacity: 0;
   -webkit-transition: opacity 0.8s ease 0s;
-  -o-transition: opacity 0.8s ease 0s;
   transition: opacity 0.8s ease 0s;
   pointer-events: none;
   z-index: 149;
@@ -227,7 +226,6 @@ body::after {
   right: 0;
   padding: 30px 10px;
   -webkit-transition: visibility 0.8s ease 0s;
-  -o-transition: visibility 0.8s ease 0s;
   transition: visibility 0.8s ease 0s;
   visibility: hidden;
   pointer-events: none;
@@ -277,7 +275,6 @@ body::after {
           transform: scale(0);
   -webkit-transition: -webkit-transform 0.3s ease 0s;
   transition: -webkit-transform 0.3s ease 0s;
-  -o-transition: transform 0.3s ease 0s;
   transition: transform 0.3s ease 0s;
   transition: transform 0.3s ease 0s, -webkit-transform 0.3s ease 0s;
   background-color: #eee;
@@ -509,7 +506,6 @@ header {
 .button__m {
   font-size: 30px;
   -webkit-transition: 0.7s ease;
-  -o-transition: 0.7s ease;
   transition: 0.7s ease;
   height: 80%;
   -ms-flex-item-align: end;
@@ -522,7 +518,6 @@ header {
   color: #020202;
   background-color: #A5A5A5;
   -webkit-transition: 0.7s ease;
-  -o-transition: 0.7s ease;
   transition: 0.7s ease;
   font-size: 30px;
   font-weight: 400;
@@ -536,7 +531,6 @@ header {
   font-size: 35px;
   font-weight: 300;
   -webkit-transition: 0.7s ease all;
-  -o-transition: 0.7s ease all;
   transition: 0.7s ease all;
 }
 
@@ -544,7 +538,6 @@ header {
   background-color: #FEA00A;
   color: #FBFBFB;
   -webkit-transition: 0.7s ease;
-  -o-transition: 0.7s ease;
   transition: 0.7s ease;
   font-size: 42.5px;
   font-weight: 300;
@@ -724,14 +717,12 @@ header {
     -webkit-filter: brightness(80%);
             filter: brightness(80%);
     -webkit-transition: 0s ease;
-    -o-transition: 0s ease;
     transition: 0s ease;
   }
 
   .button__control:hover {
     background-color: #eeeeee;
     -webkit-transition: 0s ease;
-    -o-transition: 0s ease;
     transition: 0s ease;
   }
 
@@ -740,14 +731,12 @@ header {
     -webkit-filter: brightness(80%);
             filter: brightness(80%);
     -webkit-transition: 0s ease;
-    -o-transition: 0s ease;
     transition: 0s ease;
   }
 
   .button__math:hover {
     background-color: #FBC78E;
     -webkit-transition: 0s ease;
-    -o-transition: 0s ease;
     transition: 0s ease;
   }
 }

@@ -127,7 +127,7 @@ export class Calc {
         this.varDigitStr = this.varDigitStr.slice(0, -1)
         this.numA = this.varDigitStr
         this.returnAorB = this.varDigitStr
-      }
+             }
       const fnNumBClearOneSymbol = () => {
         // this.digitRender(this.$digit.innerHTML.slice(0, -1))
         this.varDigitStr = this.varDigitStr.slice(0, -1)
@@ -720,6 +720,10 @@ export class Calc {
     const btnsMoperations = ()=> {
       if (eTarget.dataset.m === 'm+') {
         this.m = Number(this.m) + Number(this.varDigitStr)
+        this.m = this.fnToFixed(this.m)
+      }
+      if (eTarget.dataset.m === 'm-') {
+        this.m = Number(this.m) - Number(this.varDigitStr)
         this.m = this.fnToFixed(this.m)
       }
     }
