@@ -498,12 +498,12 @@ export class Calc {
       // let originalLength = this.$digit.innerHTML.length
       
       
-      this.resultAB = this.originResultAB.toExponential(this.numberLimit)
-      const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, 'g')
-      let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, '$1')
-      let symbolsE = this.resultAB.toString().length - formatEtoN.length //! К-сть символів  до Е 1234(e-2)
-      this.resultAB = this.originResultAB.toExponential(this.numberLimit - symbolsE)
-      console.log('formatEtoNformatEtoN', formatEtoN);
+      // this.resultAB = this.originResultAB.toExponential(this.numberLimit)
+      // const regexExToNum = new RegExp(/^([+-]?\d+(\.\d+)?)e([+-]?\d+)$/, 'g')
+      // let formatEtoN = this.$digit.innerHTML.replace(regexExToNum, '$1')
+      // let symbolsE = this.resultAB.toString().length - formatEtoN.length //! К-сть символів  до Е 1234(e-2)
+      // this.resultAB = this.originResultAB.toExponential(this.numberLimit - symbolsE)
+      // console.log('formatEtoNformatEtoN', formatEtoN);
 
     } 
 
@@ -626,7 +626,8 @@ export class Calc {
         ) {
       let formattedNumber = this.formatNumberForDisplay(this.varDigitStr)
       this.$digit.innerHTML = formattedNumber
-    } else this.$digit.innerHTML = this.varDigitStr.replace(/\./, ',')
+    } 
+    // else this.$digit.innerHTML = this.varDigitStr.replace(/\./, ',')
     // else if (this.varDigitStr.length > this.numberLimit){ //! Форматує результат в науковий формат (число Ейлера або експоненційний формат)
 
     //   this.$digit.innerHTML = Number(this.varDigitStr).toExponential().replace('e+', 'e')
