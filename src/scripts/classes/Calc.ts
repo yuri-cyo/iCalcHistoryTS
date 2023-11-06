@@ -152,10 +152,18 @@ export class Calc {
          
           if (targetData.equal === "=") {
             if (this.varResult.length >= 3 && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
+              
+              // console.log('this.mathOperations()', this.mathOperations());
+              // console.log('this.varResult', this.varResult);
+              // console.log('this.varOperationResult', this.varOperationResult);
+              
+              // // this.$primaryScreen.innerHTML = this.mathOperations() + ''
               this.mathOperations()
+              
             }
             
             
+            // this.varResult = this.varOperationResult
             this.equalLastNum()
             // if (lastBracket === '(' && targetData.equal === "=" &&  /\d/.test(this.varOperationResult[this.varOperationResult.length - 1])) {
             //   debugger
@@ -175,9 +183,7 @@ export class Calc {
           // if (targetData.equal === "=") debugger
           
           
-          // this.renderScreen(targetData);
-          this.renderScreen2(targetData);
-          
+          this.renderScreen(targetData);
         }
       }
     });
@@ -202,6 +208,7 @@ export class Calc {
     let statusAllOperators = [false, false]
     this.varOperationResult.forEach((item, idx) => {
       this.varOperationResult[idx] = item.replace(/\(+|\)+/, '') //! Del All Bracket ( )!
+      
 
         if (['×', ':'].includes(item)) {
           statusAllOperators[0] = true
@@ -264,14 +271,28 @@ export class Calc {
   delLastNumber(targetData: DOMStringMap) {
     if (targetData.clearone === 'c' && this.varResult[0]) {
       console.log('BTN C-One');
+      console.log('this.varOperationResult', this.varOperationResult);
       
       this.varResult[this.varResult.length - 1] = this.varResult[this.varResult.length - 1].slice(0, -1);
+      // this.varOperationResult[this.varOperationResult.length - 1] = this.varOperationResult[this.varOperationResult.length - 1].slice(0, -1);
       if (this.varResult[this.varResult.length - 1] === '') {
         this.varResult.pop()
+        this.varOperationResult.pop()
         if (this.arrAllSymbols.includes(this.varResult[this.varResult.length - 1])) {
           this.varResult.pop()
+          this.varOperationResult.pop()
+        }
+        if (!this.varResult[0]) {
+          this.varOperationResult = []
+          this.$operationsScreen.innerHTML = '<span></span>'
         }
       }
+      // if (this.varOperationResult[this.varOperationResult.length - 1] === '') {
+      //   this.varOperationResult.pop()
+      //   if (this.arrAllSymbols.includes(this.varOperationResult[this.varOperationResult.length - 1])) {
+      //     this.varOperationResult.pop()
+      //   }
+      // }
       if (!this.varResult[0]) {
 
       }
@@ -368,7 +389,7 @@ export class Calc {
         .replace(/0+$/, '').replace(/\.$/, '')
       return resultFixed
     } else {
-      // console.log('Помилка обчислення');
+      console.error('Помилка обчислення');
     }
     
   }
@@ -458,23 +479,6 @@ export class Calc {
     // //   
     // }
     this.preLastHistoryLine()
-  }
-  renderScreen2(targetData: MyDOMStringMap) {
-    if (this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
-
-      // this.varOperationResult[this.varOperationResult.length - 1] = this.addSpacesToNumber(this.varResult[this.varResult.length - 1]);
-      
-      //!=====================================
-      
-      this.closeBracket(targetData)
-      
-      //!=====================================
-      
-      this.$primaryScreen.innerHTML = this.addSpacesToNumber(this.varResult[this.varResult.length - 1]);
-    } else if (!this.varResult[0]) {
-      // $historyScreenContainer.innerText = "0";
-      this.$primaryScreen.innerText = "0";
-    }
   }
   
   // qweqweqwe(): NodeListOf<Element> {
