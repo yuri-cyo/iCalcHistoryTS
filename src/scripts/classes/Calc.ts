@@ -15,6 +15,7 @@ export class Calc {
   private $primaryScreen: HTMLElement;
   // private $historyScreenContainer: HTMLElement
   private $operationsScreen: HTMLElement;
+  // private $lastOperationsScreen: HTMLElement;
   varResult: string[];
   varOperationResult: string[];
   private symbolsNumRegex: RegExp;
@@ -26,6 +27,9 @@ export class Calc {
   private lastBracketsOffIdx: number;
   private statusAllOperators: boolean[]
   private arrAllSymbols: string[]
+  private equalResult: string | null | undefined
+
+  countHistoryResults: number
   
 
   constructor(selector: string, options: Options) {
@@ -34,10 +38,13 @@ export class Calc {
 
     this.$primaryScreen = document.querySelector("#primary-screen")!;
     // this.$historyScreenContainer = document.querySelector("#operations-screen")!
-    // this.$operationsScreen = document.querySelector("#operations-screen span:last-child")!;
+    // this.$lastOperationsScreen = document.querySelector("#operations-screen span:first-child")!;
     this.$operationsScreen = document.querySelector("#operations-screen")!;
     this.varResult = [];
     this.varOperationResult = [];
+    this.equalResult = null
+
+    this.countHistoryResults = 0
 
     this.symbolsNumRegex = /[0-9.,\-$]/;
     this.symbolsMathRegex = /^[:×\–+]$/;
@@ -61,6 +68,7 @@ export class Calc {
     this.varOperationResult = [];
     this.varOperationBracketsResult = []
     this.statusAllOperators = [false, false]
+    this.countHistoryResults = 0
 
     if (!this.varResult[0] && !this.varOperationResult[0]) {
       this.cleraAllScrean();
@@ -107,12 +115,20 @@ export class Calc {
         if (targetElement.closest(".button")) {
 
           this.delLastNumber(targetData)
+
+          
+
           console.log(this.varOperationResult);
           console.log(this.varOperationResult[this.varOperationResult.length - 1]);
           console.log('this.varResult', this.varResult);
+          console.error('this.equalResult', this.equalResult);
+          console.error('TYPE this.equalResult', typeof this.equalResult);
+          // console.error('this.mathOperations()', this.mathOperations());
+          // console.error('TYPE this.mathOperations()', typeof this.mathOperations());
 
           if (targetData.number) {
-            
+
+            // this.equalResult = null //! -----====----
 
             //! Bnts Number
             switch (true) {
@@ -128,10 +144,18 @@ export class Calc {
                 break;
             }
             this.onlyOneDot();
+            console.warn('this.equalResult', this.equalResult);
+
+           
+
           }
           if (targetData.math) {
             
             //! Bnts Math Symbols
+            if (this.equalResult &&  !this.varResult[0]) {
+              this.varOperationResult.push(this.equalResult);
+              this.varResult.push(this.equalResult);
+            }
             if (this.symbolsMathRegex.test(this.varResult[this.varResult.length - 1])) {
 
               this.varResult[this.varResult.length - 1] = targetData.math;
@@ -153,12 +177,16 @@ export class Calc {
           if (targetData.equal === "=") {
             if (this.varResult.length >= 3 && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
               
-              // console.log('this.mathOperations()', this.mathOperations());
+                // console.log('this.mathOperations()', this.mathOperations());
+                // console.log(typeof this.mathOperations());
               // console.log('this.varResult', this.varResult);
               // console.log('this.varOperationResult', this.varOperationResult);
               
               // // this.$primaryScreen.innerHTML = this.mathOperations() + ''
-              this.mathOperations()
+              // this.mathOperations()
+
+
+
               
             }
             
@@ -184,6 +212,7 @@ export class Calc {
           
           
           this.renderScreen(targetData);
+          this.scrollDown()
         }
       }
     });
@@ -196,7 +225,7 @@ export class Calc {
       // this.varResult.push(this.varResult[this.varResult.length -1])
       this.varResult.push(this.varResult[this.varResult.length -2])
       this.varOperationResult.push(this.varResult[this.varResult.length -2])
-      this.mathOperations()
+      // this.mathOperations()
     }
   }
 
@@ -387,6 +416,8 @@ export class Calc {
       let resultFixed = result!.toFixed(this.symbolsToDot(result!))
       // - this.symbolsToDot(result!)
         .replace(/0+$/, '').replace(/\.$/, '')
+      this.equalResult = resultFixed
+      console.warn('this.equalResult', this.equalResult);
       return resultFixed
     } else {
       console.error('Помилка обчислення');
@@ -446,21 +477,26 @@ export class Calc {
   //!======
   if (targetData.equal === '=' 
   && this.varResult.length >= 3 
-  && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
-    
+  && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])
+  && this.varResult) {
+    this.countHistoryResults += 1
     // this.$operationsScreen.appendChild(document.createElement("span"))
     // console.warn('=====================================');
     // console.warn('this.varResult', this.varResult);
     // <span class="equal-line"></span> //!
+    this.mathOperations()
     this.$operationsScreen.insertAdjacentHTML('beforeend', 
     `
-    <span class="res-equal res-equal-line">${this.addSpacesToNumber(this.mathOperations())}</span>
+    <span class="res-equal res-equal-line">${this.addSpacesToNumber(this.equalResult)}</span>
     `)
     this.$operationsScreen.insertAdjacentHTML('beforeend', 
     `
     <span class="history">
     </span>`)
-    this.$primaryScreen.innerText = this.addSpacesToNumber(this.mathOperations())
+    this.$primaryScreen.innerText = this.addSpacesToNumber(this.equalResult)
+
+    this.scrollDown()
+
     this.varResult = [];
     // this.varResult.push(this.addSpacesToNumber(this.mathOperations()))
     this.varOperationResult = [];
@@ -479,6 +515,12 @@ export class Calc {
     // //   
     // }
     this.preLastHistoryLine()
+  }
+
+  scrollDown() {
+    this.$operationsScreen.scrollTo(0, document.body.scrollHeight)
+    // this.$lastOperationsScreen.scrollIntoView({ behavior: 'smooth' })
+    // console.log('this.$lastOperationsScreen', this.$lastOperationsScreen);
   }
   
   // qweqweqwe(): NodeListOf<Element> {

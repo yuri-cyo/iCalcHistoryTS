@@ -27,8 +27,9 @@ const buttonsCalc: HTMLElement = document.querySelector('#buttonsCalc')!
 buttonsCalc.addEventListener('click', () => {
   ui
   .adaptiveFSScreen()
-  // console.warn('calc.varResult', calc.varResult);
-  // console.warn('calc.varOperationResult', calc.varOperationResult);
-  // console.warn('calc.lastNumInResult()', calc.lastNumInResult());
+  console.warn('calc.varResult', calc.varResult);
+  console.warn('calc.varOperationResult', calc.varOperationResult);
+  console.warn('calc.lastNumInResult()', calc.lastNumInResult());
+  console.warn('calc.lastNumInResult()', calc.countHistoryResults);
   
 })
