@@ -1,4 +1,4 @@
-Visit site => https://yuri-cyo.github.io/ICalcJS/
+Visit site => https://yuri-cyo.github.io/iCalcHistoryTS/
 
 //------------------------------------------------------------------------------
 
