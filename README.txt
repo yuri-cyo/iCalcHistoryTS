@@ -1,4 +1,4 @@
-Visit OLD iCalcJS => https://yuri-cyo.github.io/iCalcHistoryTS/
+Visit OLD iCalcM+JS => https://yuri-cyo.github.io/iCalcHistoryTS/
 
 //------------------------------------------------------------------------------
 
