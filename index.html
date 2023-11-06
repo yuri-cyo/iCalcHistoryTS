@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ICalc</title>
+    <meta charset="UTF-8">
+    <!-- <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-title" content=@@title>
+    <meta name="application-name" content=@@title>
+    <meta name="theme-color" content="#ffffff"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0">		 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content=@@title>
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="shortcut icon" href="">
+    <!-- <meta name="robots" content="noindex, nofollow"> -->
+  </head>
+<body>
+  <body>
+		<div class="wrapper">
+			<div class="container">
+				<div class="calc">
+					<div class="calc__m-screen-wrapper">
+						<p class="calc__m-screen" data-digit-m>M = 123.3</p>
+					</div>
+					<div class="calc__screen">
+						<!-- <span id="operations-screen" data-digit></span> -->
+						<div id="operations-screen">
+							<span></span>
+							<!-- <div class="historyAndEqual">
+								<span class="history"></span>
+								<span class="qual"></span>
+							</div> -->
+
+						</div>
+						<p id="primary-screen" data-digit>0</p>
+					</div>
+		
+						<div class="buttons__container" id="buttonsCalc">
+							<div class="button button__m" data-m="mc">mc</div>
+							<div class="button button__m" data-m="m+">m+</div>
+							<div class="button button__m" data-m="m-">m-</div>
+							<div class="button button__m" data-m="mr">mr</div>
+
+							<div class="button button__control" data-clear="ac" >AC</div>
+							<div class="button button__control" data-number="-">±</div>
+							<div class="button button__control button__percent" data-percent="%">%</div>
+	
+							<div class="button button__math" data-math=":">÷</div>
+	
+							<div class="button button__number" data-number="7">7</div>
+							<div class="button button__number" data-number="8">8</div>
+							<div class="button button__number" data-number="9">9</div>
+	
+							<div class="button button__math button__multiply-content" data-math="×">×</div>
+	
+							<div class="button button__number" data-number="4">4</div>
+							<div class="button button__number" data-number="5">5</div>
+							<div class="button button__number" data-number="6">6</div>
+	
+							<div class="button button__math button__subtr-content" data-math="–">–</div>
+	
+							<div class="button button__number" data-number="1">1</div>
+							<div class="button button__number" data-number="2">2</div>
+							<div class="button button__number" data-number="3">3</div>
+	
+							<div class="button button__math" data-math="+">+</div>
+							
+							<div class="button button__number" data-number="0">0</div>
+							<div class="button button__number" data-clearone="c">←</div>
+							<div class="button button__number" data-number=".">,</div>
+	
+							<div class="button button__math" data-equal="=">=</div>
+						</div>
+					
+				</div>
+				<div class="buttons"></div>
+			</div>
+    
+		</div>
+    <script type="module" src="/src/main.ts"></script>
+	</body>
+</body>
+</html>
