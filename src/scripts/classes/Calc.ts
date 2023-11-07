@@ -57,6 +57,10 @@ export class Calc {
     this.statusAllOperators = [false, false]
   }
 
+  fnLastHistoryScreen(): HTMLElement {
+    return document.querySelector("#operations-screen span:last-child")!
+  }
+
   cleraAllScrean() {
     // this.$operationsScreen.innerHTML = '<span class="history"></span>';
     this.$operationsScreen.innerHTML = '<span></span>';
@@ -145,10 +149,8 @@ export class Calc {
             }
             this.onlyOneDot();
             console.warn('this.equalResult', this.equalResult);
-
-           
-
           }
+
           if (targetData.math) {
             
             //! Bnts Math Symbols
@@ -177,17 +179,12 @@ export class Calc {
           if (targetData.equal === "=") {
             if (this.varResult.length >= 3 && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
               
-                // console.log('this.mathOperations()', this.mathOperations());
-                // console.log(typeof this.mathOperations());
+              // console.log('this.mathOperations()', this.mathOperations());
+              // console.log(typeof this.mathOperations());
               // console.log('this.varResult', this.varResult);
               // console.log('this.varOperationResult', this.varOperationResult);
               
-              // // this.$primaryScreen.innerHTML = this.mathOperations() + ''
               // this.mathOperations()
-
-
-
-              
             }
             
             
@@ -313,19 +310,10 @@ export class Calc {
         }
         if (!this.varResult[0]) {
           this.varOperationResult = []
-          this.$operationsScreen.innerHTML = '<span></span>'
+          // this.$operationsScreen.innerHTML = '<span></span>'
+          this.fnLastHistoryScreen().innerHTML = '<span></span>'
         }
       }
-      // if (this.varOperationResult[this.varOperationResult.length - 1] === '') {
-      //   this.varOperationResult.pop()
-      //   if (this.arrAllSymbols.includes(this.varOperationResult[this.varOperationResult.length - 1])) {
-      //     this.varOperationResult.pop()
-      //   }
-      // }
-      if (!this.varResult[0]) {
-
-      }
-      // this.varResult = this.varResult.slice(0, -1);
     }
   }
 
@@ -335,13 +323,6 @@ export class Calc {
     this.zeroDot(targetData, this.varResult)
     this.zeroDot(targetData, this.varOperationResult)
     this.addingBrackets(targetData)
-    // this.delLastNumber(targetData)
-    
-
-    // this.addingBrackets()
-    // this.addingBrackets1()
-    // this.addingBrackets2()
-    // this.addingBrackets3(targetData)
   }
 
   mathOperations() {
@@ -445,9 +426,7 @@ export class Calc {
 
   }
 
-  fnLastHistoryScreen(): HTMLElement {
-    return document.querySelector("#operations-screen span:last-child")!
-  }
+  
   
   renderScreen(targetData: MyDOMStringMap) {
 
