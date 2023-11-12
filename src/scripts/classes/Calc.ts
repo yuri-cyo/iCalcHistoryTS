@@ -27,9 +27,13 @@ export class Calc {
   private lastBracketsOffIdx: number;
   private statusAllOperators: boolean[]
   private arrAllSymbols: string[]
-  private equalResult: string | null | undefined
-
+  equalResult: string | null | undefined
+  
   countHistoryResults: number
+
+  private mPlusMemory: number | null
+
+  private countAC: number
   
 
   constructor(selector: string, options: Options) {
@@ -55,6 +59,10 @@ export class Calc {
     this.lastBracketsOnIdx = 0
     this.lastBracketsOffIdx = 0
     this.statusAllOperators = [false, false]
+
+    this.mPlusMemory = null
+
+    this.countAC = 0
   }
 
   fnLastHistoryScreen(): HTMLElement {
@@ -63,7 +71,7 @@ export class Calc {
 
   cleraAllScrean() {
     // this.$operationsScreen.innerHTML = '<span class="history"></span>';
-    this.$operationsScreen.innerHTML = '<span></span>';
+    this.fnLastHistoryScreen().innerHTML = '<span></span>';
     this.$primaryScreen.innerText = "";
   }
 
@@ -73,6 +81,7 @@ export class Calc {
     this.varOperationBracketsResult = []
     this.statusAllOperators = [false, false]
     this.countHistoryResults = 0
+    this.equalResult = null
 
     if (!this.varResult[0] && !this.varOperationResult[0]) {
       this.cleraAllScrean();
@@ -93,7 +102,7 @@ export class Calc {
   clickBtns() {
     
     // const ui = new UI()
-    // ui.btnsTouchNumbers()
+    // ui.btnsTouchNumbers()n
     // this.btnsTouchNumbers();
     this.$btns?.addEventListener("click", (event: Event) => {
       
@@ -119,7 +128,7 @@ export class Calc {
         if (targetElement.closest(".button")) {
 
           this.delLastNumber(targetData)
-
+          
           
 
           console.log(this.varOperationResult);
@@ -170,9 +179,9 @@ export class Calc {
               this.varOperationResult.push(targetData.math);
             }
           }
-          if (targetData.clear === "ac") {
-            this.clearAll();
-          }
+          // if (targetData.clear === "ac") {
+          //   this.clearAll();
+          // }
           
           
          
@@ -207,13 +216,99 @@ export class Calc {
           this.allFormatNumberForDisplay(targetData)
           // if (targetData.equal === "=") debugger
           
-          
+          this.btnMplus(targetData)
+          this.mClear(targetData)
+          this.clearScreens(targetData)
+          this.mScreenStyles()
           this.renderScreen(targetData);
+          this.mRecall(targetData)
+
+          if (!this.varResult[0] && this.equalResult) {
+            this.$primaryScreen.innerText = this.addSpacesToNumber(this.equalResult)
+          }
+          if (this.varResult[0]) {
+            this.equalResult = null
+          }
+          
           this.scrollDown()
+          
         }
       }
     });
     return this;
+  }
+
+  updatePrimaryScreen() {
+    if (this.varResult) {
+      this.$primaryScreen.innerText = this.varResult[this.varResult.length - 1]
+    }
+  }
+
+  updateOperationsScreen() {
+    if (this.varOperationResult[0]) {
+      this.$operationsScreen.innerText = this.varOperationResult[this.varOperationResult.length - 1]
+    }
+  }
+
+  updateAllScreen() {
+    this.updatePrimaryScreen()
+    this.updateOperationsScreen()
+  }
+
+  clearScreens(targetData: MyDOMStringMap) {
+    const $bntAC: HTMLElement = document.querySelector('[data-clear="ac"]')!
+
+ 
+    
+    // this.countAC = 0
+    if (targetData.clear === "ac") {
+      this.countAC += 1
+      
+      
+      if (this.countAC === 1) {
+        console.warn('$bntAC', $bntAC.innerHTML);
+        this.varResult.pop()
+        this.varOperationResult.pop()
+        this.equalResult = null
+        this.updatePrimaryScreen()
+
+        if (!this.varOperationResult[0]) {
+          // $bntAC.innerHTML = 'AC'
+          this.fnLastHistoryScreen().innerText = ''
+        }
+        if (!this.varOperationResult[0] && !this.varResult[0] && this.$operationsScreen.innerText !== '') {
+          this.countAC += 1
+        }
+      } 
+      if (this.countAC === 2) {
+        this.clearAll();
+        if (this.$operationsScreen.innerText !== '') {
+          // const defaulcColor = $bntAC.style.background
+          // $bntAC.style.background = '#FBC78E'
+          // setTimeout(() => {
+          //   $bntAC.style.background = defaulcColor
+            
+          // }, 1000);
+        }
+        // if (!this.varOperationResult[0] && !this.varResult[0] && !this.equalResult) {
+        // }
+      }
+      if (this.countAC >= 3) {
+        this.$operationsScreen.innerHTML = '<span></span>';
+        // this.countAC = 0
+        this.clearAll();
+        // $bntAC.innerHTML = 'AC'
+      }
+    } else {
+      this.countAC = 0
+    }
+
+    if (this.varResult[0] || this.equalResult) {
+      $bntAC.innerHTML = 'C'
+    } else if (!this.varOperationResult[0] && !this.varResult[0]){
+      $bntAC.innerHTML = 'AC'
+    }
+    console.error('this.countAC =', this.countAC);
   }
 
   equalLastNum() {
@@ -299,15 +394,17 @@ export class Calc {
       console.log('BTN C-One');
       console.log('this.varOperationResult', this.varOperationResult);
       
-      this.varResult[this.varResult.length - 1] = this.varResult[this.varResult.length - 1].slice(0, -1);
+      this.varResult[this.varResult.length - 1] = this.varResult[this.varResult.length - 1].slice(0, -1).replace(/-$/, '')
+      
       // this.varOperationResult[this.varOperationResult.length - 1] = this.varOperationResult[this.varOperationResult.length - 1].slice(0, -1);
       if (this.varResult[this.varResult.length - 1] === '') {
         this.varResult.pop()
         this.varOperationResult.pop()
-        if (this.arrAllSymbols.includes(this.varResult[this.varResult.length - 1])) {
-          this.varResult.pop()
-          this.varOperationResult.pop()
-        }
+        // if (this.arrAllSymbols.includes(this.varResult[this.varResult.length - 1])) {
+        // if (this.varResult[this.varResult.length - 1]) {
+        //   this.varResult.pop()
+        //   this.varOperationResult.pop()
+        // }
         if (!this.varResult[0]) {
           this.varOperationResult = []
           // this.$operationsScreen.innerHTML = '<span></span>'
@@ -406,6 +503,13 @@ export class Calc {
     
   }
 
+  fnToFixed(num: number) {
+    if (num) {
+      return +num.toFixed(this.symbolsToDot(num!)).replace(/0+$/, '').replace(/\.$/, '')
+
+    }
+  }
+
   symbolsToDot(number: number | string) {
     const numberString = number.toString(); // Перетворюємо число у рядок
     const parts = numberString.split('.');   // Розбиваємо рядок за допомогою крапки
@@ -432,6 +536,10 @@ export class Calc {
 
     // this.delLastNumber(targetData)
 
+    if (this.varOperationResult[0]) {
+      this.$primaryScreen.innerHTML = this.addSpacesToNumber(this.varResult[this.varResult.length - 1]);
+    }
+    
     if (this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
 
       this.varOperationResult[this.varOperationResult.length - 1] = this.addSpacesToNumber(this.varResult[this.varResult.length - 1]);
@@ -441,8 +549,7 @@ export class Calc {
       this.closeBracket(targetData)
       
       //!=====================================
-      
-      this.$primaryScreen.innerHTML = this.addSpacesToNumber(this.varResult[this.varResult.length - 1]);
+
     } else if (!this.varResult[0]) {
       // $historyScreenContainer.innerText = "0";
       this.$primaryScreen.innerText = "0";
@@ -454,46 +561,38 @@ export class Calc {
     // this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join("&nbsp<wbr>"); //! === !!!!
     this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join("&nbsp<wbr>");
   //!======
-  if (targetData.equal === '=' 
-  && this.varResult.length >= 3 
-  && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])
-  && this.varResult) {
-    this.countHistoryResults += 1
-    // this.$operationsScreen.appendChild(document.createElement("span"))
-    // console.warn('=====================================');
-    // console.warn('this.varResult', this.varResult);
-    // <span class="equal-line"></span> //!
-    this.mathOperations()
-    this.$operationsScreen.insertAdjacentHTML('beforeend', 
-    `
-    <span class="res-equal res-equal-line">${this.addSpacesToNumber(this.equalResult)}</span>
-    `)
-    this.$operationsScreen.insertAdjacentHTML('beforeend', 
-    `
-    <span class="history">
-    </span>`)
-    this.$primaryScreen.innerText = this.addSpacesToNumber(this.equalResult)
-
-    this.scrollDown()
-
-    this.varResult = [];
-    // this.varResult.push(this.addSpacesToNumber(this.mathOperations()))
-    this.varOperationResult = [];
+  if (targetData.equal === '=') {
+    this.renderActionEqualBtn()
   }
-  //! =======
-  // if (targetData.equal === '=') {
-    //   this.$operationsScreen.insertAdjacentHTML('beforeend', 
-    //   `
-    //   <div class="historyAndEqual">
-    //       <span class="history"></span>
-		// 			<span class="qual"></span>
-    //   </div>
-      
-    //   `)
-    
-    // //   
-    // }
     this.preLastHistoryLine()
+  }
+
+  renderActionEqualBtn() {
+    if (this.varResult.length >= 3 
+    && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])
+    && this.varResult) {
+      this.countHistoryResults += 1
+      // this.$operationsScreen.appendChild(document.createElement("span"))
+      // console.warn('=====================================');
+      // console.warn('this.varResult', this.varResult);
+      // <span class="equal-line"></span> //!
+      this.mathOperations()
+      this.$operationsScreen.insertAdjacentHTML('beforeend', 
+      `
+      <span class="res-equal res-equal-line">${this.addSpacesToNumber(this.equalResult)}</span>
+      `)
+      this.$operationsScreen.insertAdjacentHTML('beforeend', 
+      `
+      <span class="history">
+      </span>`)
+      this.$primaryScreen.innerText = this.addSpacesToNumber(this.equalResult)
+  
+      this.scrollDown()
+  
+      this.varResult = [];
+      // this.varResult.push(this.addSpacesToNumber(this.mathOperations()))
+      this.varOperationResult = [];
+    }
   }
 
   scrollDown() {
@@ -560,6 +659,105 @@ export class Calc {
       
     // // console.error('element', allHistory);
     
+  }
+
+  clickEqual() {
+  const $equalBtn: HTMLElement = document.querySelector('[data-equal="="]')!
+    console.error('$equalBtn', $equalBtn);
+    $equalBtn.click()
+}
+
+  btnMplus(targetData: MyDOMStringMap) {
+    const mClass = 'm-sceen-on'
+
+    const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
+
+    
+
+    const renderMBtn = ()=> {
+      if (this.mPlusMemory) {
+        this.mPlusMemory = this.fnToFixed(this.mPlusMemory)!
+      }
+      console.error('this.mPlusMemory', this.mPlusMemory);
+      
+      // $screenM.innerText = this.mPlusMemory + ''
+      if (this.mPlusMemory || this.mPlusMemory === 0) {
+        $screenM.innerText = this.addSpacesToNumber(`M = ${this.mPlusMemory}`)
+        // $screenM.innerHTML = '<p>123</p>'
+        // $screenM.insertAdjacentHTML('beforeend', `
+        // <p>123</p>
+        // `)
+      }
+    }
+
+    const btnsmOperations = ()=> {
+      if (targetData.m === 'm+') {
+        if (this.varResult.length >= 2 && !this.equalResult) {
+          this.clickEqual()
+          this.mPlusMemory = this.mPlusMemory! + Number(this.equalResult)
+        } else if (this.varResult.length === 1 && !this.equalResult) {
+          this.mPlusMemory = this.mPlusMemory! + Number(this.varResult[this.varResult.length - 1])
+        } else if (this.equalResult) {
+          this.mPlusMemory = this.mPlusMemory! + Number(this.equalResult)
+        }
+        renderMBtn()
+      }
+      if (targetData.m === 'm-') {
+        if (this.varResult.length >= 2 && !this.equalResult) {
+          this.clickEqual()
+          this.mPlusMemory = this.mPlusMemory! - Number(this.equalResult)
+        } else if (this.varResult.length === 1 && !this.equalResult) {
+          this.mPlusMemory = this.mPlusMemory! - Number(this.varResult[this.varResult.length - 1])
+        } else if (this.equalResult) {
+          this.mPlusMemory = this.mPlusMemory! - Number(this.equalResult)
+        }
+        renderMBtn()
+      }
+    }
+    
+    btnsmOperations()
+   
+  }
+
+  mScreenStyles() {
+    const mClass = 'm-sceen-on'
+
+    const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
+
+     if ($screenM.textContent !== '') {
+      $screenM.classList.add(mClass)
+    } else if ($screenM.textContent === '') {
+      $screenM.classList.remove(mClass)
+    }
+  }
+
+  mClear(targetData: MyDOMStringMap) {
+    const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
+    if (targetData.m === 'mc') {
+      this.mPlusMemory = null
+      if (this.mPlusMemory === null || this.mPlusMemory === '') {
+        $screenM.innerText = ''
+      }
+    }
+  }
+
+  mRecall(targetData: MyDOMStringMap) {
+    if (targetData.m === 'mr' && this.mPlusMemory) {
+      if (this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1]) && this.varResult[0]) {
+        this.varResult.pop()
+        this.varOperationResult.pop()
+
+        this.varResult.push(this.mPlusMemory+'')
+        this.varOperationResult.push(this.mPlusMemory+'')
+      } else if (this.symbolsMathRegex.test(this.varResult[this.varResult.length - 1]) && this.varResult[0]) {
+        this.varResult.push(this.mPlusMemory+'')
+        this.varOperationResult.push(this.mPlusMemory+'')
+      } else if (!this.varResult[0]) {
+        this.varResult.push(this.mPlusMemory+'')
+        this.varOperationResult.push(this.mPlusMemory+'')
+      }
+    }
+    this.renderScreen(targetData)
   }
 
   lastNumInResult(): string {

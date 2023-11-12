@@ -29,6 +29,7 @@ buttonsCalc.addEventListener('click', () => {
   .adaptiveFSScreen()
   console.warn('calc.varResult', calc.varResult);
   console.warn('calc.varOperationResult', calc.varOperationResult);
+  console.warn('calc.equalResult', calc.equalResult);
   console.warn('calc.lastNumInResult()', calc.lastNumInResult());
   console.warn('calc.lastNumInResult()', calc.countHistoryResults);
   

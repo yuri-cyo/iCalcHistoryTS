@@ -108,6 +108,7 @@ $pd-content: $gap;
   width: 6px; /* Ширина скролбара */
 	height: 6px;
 	background-color: #000000;
+	// filter: brightness(-2);
 }
 
 /* Кнопка скролбара */
@@ -175,6 +176,7 @@ header {
 
 .calc {
 	display: flex;
+	overflow: hidden;
 	width: $maxWidthCalc;
 	flex-direction: column;
 	background-color: $bg-calc;
@@ -187,39 +189,66 @@ header {
 		box-shadow: none;
 		margin-bottom: rem(5);
 		height: 100%;
+		border-radius: 0 !important; 
 	}
 	@media (max-width: em(400)) {
 		width: 100%;
+		border-radius: 0 !important; 
 	}
 	
 	&__m-screen-wrapper {
 		display: flex;
 		// justify-content:center;
 		align-items: center;
-		min-height: 1rem;
+		// min-height: 40px;
 		font-size: 1rem;
-		// padding: $screen-padding;
-		padding: $pd-content $pd-content calc($pd-content / 2) calc($pd-content * 2.5);
+		position: fixed;
+		margin-left: 15px;
+		margin-top: 15px;
+		// padding: $screen-padding 1rem;
+		// padding: $pd-content $pd-content calc($pd-content / 2) calc($pd-content * 2.5);
 		
 		@media (max-width: em(400)), (max-height: em(680)) {
 			// width: 100%;
 			// justify-content: center;
-			padding: calc($pd-content / 2);
+			// padding: calc($pd-content / 2);
 		}
 		
 		p {
 			display: flex;
+			border-radius: 100px;
+			// background-color: $btn-control-hover;
 			justify-content:center;
 			align-items: center;
-			border-radius: 2rem;
+			color: $bg-calc;
+			font-weight: 600;
+			// border-radius: 2rem;
 			// background-color: $btn-math;
 			// background-color: #fea00a9f;
 
-			// padding: 2px 10px;
-			transition: all 0.3s ease 0s;
+			padding: 2px 7px;
+			// filter: blur(10px);
+			// transition: all 0.3s ease 0s;
+			// animation: blurAnimationOf 2s infinite;
 			// display: none;
 			// margin: 0 auto;
+			
 		}
+	}
+
+	// @keyframes blurAnimationOf {
+	// 	100% {
+	// 		filter: blur(10px)
+	// 	}
+	// }
+	// @keyframes blurAnimationOn {
+	// 	100% {
+	// 		filter: blur(0px)
+	// 	}
+	// }
+
+	.m-sceen-on {
+		background-color: $btn-control-hover;
 	}
 
 	// &__m-screen {
@@ -249,6 +278,7 @@ header {
 		padding: $screen-padding;
 		padding-right: 0;
 		align-items: flex-end;
+		margin-top: rem(15);
 
 		@media (max-width: em(400)), (max-height: em(680)) {
 			// min-height: 90px;
