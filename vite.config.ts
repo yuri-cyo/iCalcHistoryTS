@@ -7,9 +7,10 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 8081, // Змініть це значення на номер порта, який ви бажаєте використовувати
   },
+  base: './',
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(__dirname, "src"),
     },
   },
 });

@@ -1,4 +1,4 @@
-import { UI } from "@/scripts/classes/UI";
+// import { UI } from "@/scripts/classes/UI";
 
 interface Options {
   limitNumbers: number;
@@ -21,12 +21,8 @@ export class Calc {
   private symbolsNumRegex: RegExp;
   private symbolsMathRegex: RegExp;
 
-  private varOperationBracketsResult: string[];
-  private isBrackets: string;
-  private lastBracketsOnIdx: number;
-  private lastBracketsOffIdx: number;
-  private statusAllOperators: boolean[]
-  private arrAllSymbols: string[]
+  // private statusAllOperators: boolean[]
+  // private arrAllSymbols: string[]
   equalResult: string | null | undefined
   
   countHistoryResults: number
@@ -52,13 +48,9 @@ export class Calc {
 
     this.symbolsNumRegex = /[0-9.,\-$]/;
     this.symbolsMathRegex = /^[:×\–+]$/;
-    this.arrAllSymbols = ["+", "–", "×", ":"]
+    // this.arrAllSymbols = ["+", "–", "×", ":"]
 
-    this.varOperationBracketsResult = []
-    this.isBrackets = ''
-    this.lastBracketsOnIdx = 0
-    this.lastBracketsOffIdx = 0
-    this.statusAllOperators = [false, false]
+    // this.statusAllOperators = [false, false]
 
     this.mPlusMemory = null
 
@@ -78,8 +70,7 @@ export class Calc {
   clearAll() {
     this.varResult = [];
     this.varOperationResult = [];
-    this.varOperationBracketsResult = []
-    this.statusAllOperators = [false, false]
+    // this.statusAllOperators = [false, false]
     this.countHistoryResults = 0
     this.equalResult = null
 
@@ -321,7 +312,7 @@ export class Calc {
     }
   }
 
-  addingBrackets(targetData: MyDOMStringMap) { //! =======================================================================!!!!!!!!!!!
+  addingBrackets() { //! =======================================================================!!!!!!!!!!!
     let lastBracket: string = ''
 
     let status: boolean | undefined
@@ -372,14 +363,11 @@ export class Calc {
 
   closeBracket(targetData: DOMStringMap) {
     let lastBracket = ''
-    let lastBracketsIdx: number
     this.varOperationResult.forEach((item, idx) => {
       if (/\(/.test(item)) {
         lastBracket = '('
-        lastBracketsIdx = idx
       } else if (/\)/.test(item)) {
         lastBracket = ')'
-        lastBracketsIdx = idx
       }
       
       if (lastBracket === '(' && targetData.equal === '=' && idx === this.varOperationResult.length - 1) {
@@ -419,7 +407,7 @@ export class Calc {
     this.numNegative(this.varOperationResult)
     this.zeroDot(targetData, this.varResult)
     this.zeroDot(targetData, this.varOperationResult)
-    this.addingBrackets(targetData)
+    this.addingBrackets()
   }
 
   mathOperations() {
@@ -559,7 +547,8 @@ export class Calc {
 
     if (this.varOperationResult[0])
     // this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join("&nbsp<wbr>"); //! === !!!!
-    this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join("&nbsp<wbr>");
+    // this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join("&nbsp<wbr>");
+    this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join(" ").replace(/(\d)\s+(\d)/g, '$1&nbsp;$2');
   //!======
   if (targetData.equal === '=') {
     this.renderActionEqualBtn()
@@ -608,8 +597,6 @@ export class Calc {
     
     preLastHistoryLine() {
       const allHistory: NodeListOf<Element> = document.querySelectorAll("#operations-screen span");
-      const allH: Element = document.querySelector(".history")!;
-      
       // // console.error('element111111111111111111111', allHistory[allHistory.length - 1]);
       // // // console.error('allHistory[allHistory.length - 1]', allHistory[allHistory.length - 1]);
       
@@ -668,8 +655,6 @@ export class Calc {
 }
 
   btnMplus(targetData: MyDOMStringMap) {
-    const mClass = 'm-sceen-on'
-
     const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
 
     

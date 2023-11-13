@@ -306,12 +306,20 @@ header {
 				span {
 					display: flex;
 					align-self: flex-end;
-					white-space: nowrap
+					text-align: right;
+					// white-space: nowrap
 					// text-align: center;
 					// text-align: end;
 				}
 				.history {
-					// width: 100%;
+					// word-break: break-all;
+					// hyphens: auto;
+					// display: flex;
+					// flex-wrap: wrap;
+					// align-self: flex-end;
+					// // white-space: nowrap;
+					// // width: 200px;
+					// overflow-wrap: break-word
 					// border-bottom: 1px solid $btn-numbers-click !important;
 				}
 				.equal-line {
