@@ -106,7 +106,12 @@ export class Calc {
           console.error('this.equalResult', this.equalResult);
           console.error('TYPE this.equalResult', typeof this.equalResult);
 
-          if (targetData.number) {
+          if (targetData.number ) {
+
+            if (this.varResult[0] 
+              && this.varResult[this.varResult.length - 1].length >= this.limitNumbers
+              && targetData.number !== '-') return //! LIMIT NUMBERS!!!!
+
             //! Bnts Number
             switch (true) {
               case this.symbolsNumRegex.test(
@@ -399,7 +404,8 @@ export class Calc {
     const result = calculate(this.varResult);
 
     if (!isNaN(result!)) {
-      let resultFixed = result!.toFixed(this.symbolsToDot(result!)).replace(/0+$/, '').replace(/\.$/, '')
+      // let resultFixed = result!.toFixed(this.symbolsToDot(result!)).replace(/0+$/, '').replace(/\.$/, '')
+      let resultFixed = this.fnToFixed(result!) + ''
       this.equalResult = resultFixed
       console.warn('this.equalResult', this.equalResult);
       console.warn('typeof this.equalResult', typeof this.equalResult);
@@ -412,8 +418,15 @@ export class Calc {
 
   fnToFixed(num: number) {
     if (num) {
-      return +num.toFixed(this.symbolsToDot(num!)).replace(/0+$/, '').replace(/\.$/, '')
-
+      // return +num.toFixed(this.symbolsToDot(num!)).replace(/0+$/, '').replace(/\.$/, '')
+      let result = +num.toFixed(this.limitNumbers)
+        .replace(/\.$/, '')
+        .replace(/0+$/, '')
+        
+      result.toPrecision(this.limitNumbers - 3)
+        .replace(/0+$/, '')
+        .replace(/[\.,]$/, '')
+      return result
     }
   }
 
