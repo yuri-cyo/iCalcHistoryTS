@@ -220,13 +220,25 @@ export class Calc {
           if (this.varResult[0]) {
             this.equalResult = null
           }
+
           
+          this.errDivisionDero()
           this.scrollDown()
           
         }
       }
     });
     return this;
+  }
+
+  errDivisionDero() {
+    const errMessage: string = 'Error'
+    if (this.equalResult === 'Infinity') {
+      this.equalResult = null
+      // debugger
+      this.$primaryScreen.innerHTML = errMessage
+      // return errMessage
+    }
   }
 
   updatePrimaryScreen() {
@@ -466,7 +478,7 @@ export class Calc {
         case ':':
           if (b === 0) {
             // console.error('Ділення на нуль');
-            return NaN; // Обробка помилки, якщо відбувається ділення на нуль
+            // return NaN; // Обробка помилки, якщо відбувається ділення на нуль
           }
           return a / b;
         default:
@@ -484,6 +496,7 @@ export class Calc {
         .replace(/0+$/, '').replace(/\.$/, '')
       this.equalResult = resultFixed
       console.warn('this.equalResult', this.equalResult);
+      console.warn('typeof this.equalResult', typeof this.equalResult);
       return resultFixed
     } else {
       console.error('Помилка обчислення');
@@ -554,6 +567,7 @@ export class Calc {
     this.renderActionEqualBtn()
   }
     this.preLastHistoryLine()
+    
   }
 
   renderActionEqualBtn() {
@@ -566,15 +580,32 @@ export class Calc {
       // console.warn('this.varResult', this.varResult);
       // <span class="equal-line"></span> //!
       this.mathOperations()
-      this.$operationsScreen.insertAdjacentHTML('beforeend', 
+      if (this.equalResult === 'Infinity') {
+        // this.equalResult = '0'
+        // this.errDivisionDero()
+
+        this.$operationsScreen.insertAdjacentHTML('beforeend', 
+        `
+        <span class="res-equal res-equal-line">${'Error'}</span>
+        `)
+      } else {
+        this.$operationsScreen.insertAdjacentHTML('beforeend', 
       `
       <span class="res-equal res-equal-line">${this.addSpacesToNumber(this.equalResult)}</span>
       `)
+      }
+      
       this.$operationsScreen.insertAdjacentHTML('beforeend', 
       `
       <span class="history">
       </span>`)
-      this.$primaryScreen.innerText = this.addSpacesToNumber(this.equalResult)
+      if (this.equalResult === 'Infinity') {
+        this.$primaryScreen.innerText = this.equalResult
+        // this.equalResult = '0'
+      } else {
+        this.$primaryScreen.innerText = this.addSpacesToNumber(this.equalResult)
+
+      }
   
       this.scrollDown()
   
