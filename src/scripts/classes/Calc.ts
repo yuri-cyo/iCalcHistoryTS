@@ -416,16 +416,18 @@ export class Calc {
     
   }
 
-  fnToFixed(num: number) {
+  fnToFixed(num: number): number | undefined{
     if (num) {
       // return +num.toFixed(this.symbolsToDot(num!)).replace(/0+$/, '').replace(/\.$/, '')
-      let result = +num.toFixed(this.limitNumbers)
+      let result: number = +num.toFixed(this.limitNumbers)
         .replace(/\.$/, '')
         .replace(/0+$/, '')
         
-      result.toPrecision(this.limitNumbers - 3)
+      result = +result.toPrecision(this.limitNumbers - 3)
         .replace(/0+$/, '')
         .replace(/[\.,]$/, '')
+        .replace(/0+$/, '')
+        
       return result
     }
   }
