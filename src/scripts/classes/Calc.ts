@@ -20,7 +20,6 @@ export class Calc {
   varOperationResult: string[];
   private symbolsNumRegex: RegExp;
   private symbolsMathRegex: RegExp;
-
   // private statusAllOperators: boolean[]
   // private arrAllSymbols: string[]
   equalResult: string | null | undefined
@@ -47,13 +46,11 @@ export class Calc {
     this.countHistoryResults = 0
 
     this.symbolsNumRegex = /[0-9.,\-$]/;
-    this.symbolsMathRegex = /^[:×\–+]$/;
-    // this.arrAllSymbols = ["+", "–", "×", ":"]
+    this.symbolsMathRegex = /^[÷×\–+]$/;
+    // this.arrAllSymbols = ["+", "–", "×", '÷]
 
     // this.statusAllOperators = [false, false]
-
     this.mPlusMemory = null
-
     this.countAC = 0
   }
 
@@ -62,7 +59,6 @@ export class Calc {
   }
 
   cleraAllScrean() {
-    // this.$operationsScreen.innerHTML = '<span class="history"></span>';
     this.fnLastHistoryScreen().innerHTML = '<span></span>';
     this.$primaryScreen.innerText = "";
   }
@@ -84,14 +80,12 @@ export class Calc {
       this.varResult[this.varResult.length - 1] = this.varResult[
         this.varResult.length - 1
       ]
-        // .replace(/-[^.\d]+/g, "")
         .replace(/[^.\d-]+/g, "")
         .replace(/^([^\.]*\.)|\./g, "$1");
     }
   }
 
   clickBtns() {
-    
     // const ui = new UI()
     // ui.btnsTouchNumbers()n
     // this.btnsTouchNumbers();
@@ -99,41 +93,20 @@ export class Calc {
       
       if (event.target) {
         
-        // const target = event.target as HTMLButtonElement;
-        // const dataEqual: string | undefined = target.dataset.equal
-        
         const targetElement = event.target as HTMLButtonElement
-        
-        
-
-        
         const targetData: MyDOMStringMap = targetElement.dataset;
-
-        // if (targetData.equal === '=' || !this.varOperationResult[0]) {
-        //   // this.$historyScreenContainer.insertAdjacentHTML("afterend", '<span><span/>')
-        //   // this.$operationsScreen.insertAdjacentHTML("afterend", '<span><span/>')
-        //   this.$historyScreenContainer.appendChild(document.createElement("span"))
-        //   // console.error('!this.varOperationResult[0]', this.varOperationResult.length);
-        // }
 
         if (targetElement.closest(".button")) {
 
           this.delLastNumber(targetData)
-          
-          
 
           console.log(this.varOperationResult);
           console.log(this.varOperationResult[this.varOperationResult.length - 1]);
           console.log('this.varResult', this.varResult);
           console.error('this.equalResult', this.equalResult);
           console.error('TYPE this.equalResult', typeof this.equalResult);
-          // console.error('this.mathOperations()', this.mathOperations());
-          // console.error('TYPE this.mathOperations()', typeof this.mathOperations());
 
           if (targetData.number) {
-
-            // this.equalResult = null //! -----====----
-
             //! Bnts Number
             switch (true) {
               case this.symbolsNumRegex.test(
@@ -154,8 +127,8 @@ export class Calc {
           if (targetData.math) {
             
             //! Bnts Math Symbols
-            if (this.equalResult &&  !this.varResult[0]) {
-              this.varOperationResult.push(this.equalResult);
+            if (this.equalResult &&  !this.varResult[0]) { //! 999 999 + 999 999 = res + ...
+              this.varOperationResult.push(this.addSpacesToNumber(this.equalResult));
               this.varResult.push(this.equalResult);
             }
             if (this.symbolsMathRegex.test(this.varResult[this.varResult.length - 1])) {
@@ -170,43 +143,13 @@ export class Calc {
               this.varOperationResult.push(targetData.math);
             }
           }
-          // if (targetData.clear === "ac") {
-          //   this.clearAll();
-          // }
-          
-          
-         
           if (targetData.equal === "=") {
-            if (this.varResult.length >= 3 && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
-              
-              // console.log('this.mathOperations()', this.mathOperations());
-              // console.log(typeof this.mathOperations());
-              // console.log('this.varResult', this.varResult);
-              // console.log('this.varOperationResult', this.varOperationResult);
-              
-              // this.mathOperations()
-            }
-            
-            
-            // this.varResult = this.varOperationResult
-            this.equalLastNum()
-            // if (lastBracket === '(' && targetData.equal === "=" &&  /\d/.test(this.varOperationResult[this.varOperationResult.length - 1])) {
-            //   debugger
-            //   console.warn('this.varOperationResult', this.varOperationResult);
-            //   this.varOperationResult[this.varOperationResult.length - 1] = this.varOperationResult[this.varOperationResult.length - 1].replace(/$/, ')').replace(/\)\)$/, ')')
-            //   console.log('this.varOperationResult', this.varOperationResult);
+            // if (this.varResult.length >= 3 && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
             // }
+            this.equalLastNum()
           }
-
-          
-          // this.preLastHistoryLine(event.target)
-          
-          
-          // this.mathOperations(event)
           
           this.allFormatNumberForDisplay(targetData)
-          // if (targetData.equal === "=") debugger
-          
           this.btnMplus(targetData)
           this.mClear(targetData)
           this.clearScreens(targetData)
@@ -220,7 +163,6 @@ export class Calc {
           if (this.varResult[0]) {
             this.equalResult = null
           }
-
           
           this.errDivisionDero()
           this.scrollDown()
@@ -235,9 +177,7 @@ export class Calc {
     const errMessage: string = 'Error'
     if (this.equalResult === 'Infinity') {
       this.equalResult = null
-      // debugger
       this.$primaryScreen.innerHTML = errMessage
-      // return errMessage
     }
   }
 
@@ -261,12 +201,8 @@ export class Calc {
   clearScreens(targetData: MyDOMStringMap) {
     const $bntAC: HTMLElement = document.querySelector('[data-clear="ac"]')!
 
- 
-    
-    // this.countAC = 0
     if (targetData.clear === "ac") {
       this.countAC += 1
-      
       
       if (this.countAC === 1) {
         console.warn('$bntAC', $bntAC.innerHTML);
@@ -276,7 +212,6 @@ export class Calc {
         this.updatePrimaryScreen()
 
         if (!this.varOperationResult[0]) {
-          // $bntAC.innerHTML = 'AC'
           this.fnLastHistoryScreen().innerText = ''
         }
         if (!this.varOperationResult[0] && !this.varResult[0] && this.$operationsScreen.innerText !== '') {
@@ -285,22 +220,10 @@ export class Calc {
       } 
       if (this.countAC === 2) {
         this.clearAll();
-        if (this.$operationsScreen.innerText !== '') {
-          // const defaulcColor = $bntAC.style.background
-          // $bntAC.style.background = '#FBC78E'
-          // setTimeout(() => {
-          //   $bntAC.style.background = defaulcColor
-            
-          // }, 1000);
-        }
-        // if (!this.varOperationResult[0] && !this.varResult[0] && !this.equalResult) {
-        // }
       }
       if (this.countAC >= 3) {
         this.$operationsScreen.innerHTML = '<span></span>';
-        // this.countAC = 0
         this.clearAll();
-        // $bntAC.innerHTML = 'AC'
       }
     } else {
       this.countAC = 0
@@ -316,11 +239,8 @@ export class Calc {
 
   equalLastNum() {
     if (this.varResult.length >= 2 && this.symbolsMathRegex.test(this.varResult[this.varResult.length - 1])) {
-      // // console.error('this.varResult[this.varResult.length - 1]', this.varResult[this.varResult.length - 1]);
-      // this.varResult.push(this.varResult[this.varResult.length -1])
       this.varResult.push(this.varResult[this.varResult.length -2])
       this.varOperationResult.push(this.varResult[this.varResult.length -2])
-      // this.mathOperations()
     }
   }
 
@@ -334,7 +254,7 @@ export class Calc {
       this.varOperationResult[idx] = item.replace(/\(+|\)+/, '') //! Del All Bracket ( )!
       
 
-        if (['×', ':'].includes(item)) {
+        if (['×', '÷'].includes(item)) {
           statusAllOperators[0] = true
           console.log('statusAllOperators[0] = ', statusAllOperators[0]);
         } 
@@ -349,7 +269,7 @@ export class Calc {
     if (status) {
       this.varOperationResult.forEach((item, idx) => {
       
-        if (['×', ':'].includes(item)) {
+        if (['×', '÷'].includes(item)) {
           if (!this.varOperationResult[idx - 2] || ['+', '–'].includes(this.varOperationResult[idx - 2])) {
             this.varOperationResult[idx - 1] = this.varOperationResult[idx - 1].replace(/^/, '(')
             lastBracket = '('
@@ -358,17 +278,13 @@ export class Calc {
           }
         } 
         if (['+', '–'].includes(item) && lastBracket === '(') {
-          if (!this.varOperationResult[idx - 2] || ['×', ':'].includes(this.varOperationResult[idx - 2])) {
+          if (!this.varOperationResult[idx - 2] || ['×', '÷'].includes(this.varOperationResult[idx - 2])) {
             this.varOperationResult[idx - 1] = this.varOperationResult[idx - 1].replace(/$/, ')').replace(/\)\)$/, ')')
             lastBracket = ')'
             console.error('item = ', item );
             console.log('status = ', status );
           }
         } 
-        // if (lastBracket === '(' && targetData.equal === '=') {
-        //   this.varOperationResult[this.varOperationResult.length - 1] = this.varOperationResult[this.varOperationResult.length - 1].replace(/$/, ')').replace(/\)\)$/, ')')
-        //   console.log('this.varOperationResult', this.varOperationResult);
-        // }
       })
     }
   }
@@ -395,19 +311,13 @@ export class Calc {
       console.log('this.varOperationResult', this.varOperationResult);
       
       this.varResult[this.varResult.length - 1] = this.varResult[this.varResult.length - 1].slice(0, -1).replace(/-$/, '')
-      
-      // this.varOperationResult[this.varOperationResult.length - 1] = this.varOperationResult[this.varOperationResult.length - 1].slice(0, -1);
+
       if (this.varResult[this.varResult.length - 1] === '') {
         this.varResult.pop()
         this.varOperationResult.pop()
-        // if (this.arrAllSymbols.includes(this.varResult[this.varResult.length - 1])) {
-        // if (this.varResult[this.varResult.length - 1]) {
-        //   this.varResult.pop()
-        //   this.varOperationResult.pop()
-        // }
+  
         if (!this.varResult[0]) {
           this.varOperationResult = []
-          // this.$operationsScreen.innerHTML = '<span></span>'
           this.fnLastHistoryScreen().innerHTML = '<span></span>'
         }
       }
@@ -430,13 +340,13 @@ export class Calc {
         '+': 1,
         '–': 1,
         '×': 2,
-        ':': 2,
+        '÷': 2,
       };
     
       for (const item of inputArray) {
         if (!isNaN(Number(item))) {
           numbers.push(Number(item));
-        } else if (['+', '–', '×', ':'].includes(item)) {
+        } else if (['+', '–', '×', '÷'].includes(item)) {
           while (operators.length > 0 
             && operatorPrecedence[operators[operators.length - 1]] >= operatorPrecedence[item]) {
             const operator = operators.pop() as string;
@@ -475,7 +385,7 @@ export class Calc {
           return a - b;
         case '×':
           return a * b;
-        case ':':
+        case '÷':
           if (b === 0) {
             // console.error('Ділення на нуль');
             // return NaN; // Обробка помилки, якщо відбувається ділення на нуль
@@ -486,14 +396,10 @@ export class Calc {
       }
     }
     
-    // const inputArray = ['1', '+', '2', '*', '3'];
     const result = calculate(this.varResult);
-    // const resultFixed = toFixed(result)
 
     if (!isNaN(result!)) {
-      let resultFixed = result!.toFixed(this.symbolsToDot(result!))
-      // - this.symbolsToDot(result!)
-        .replace(/0+$/, '').replace(/\.$/, '')
+      let resultFixed = result!.toFixed(this.symbolsToDot(result!)).replace(/0+$/, '').replace(/\.$/, '')
       this.equalResult = resultFixed
       console.warn('this.equalResult', this.equalResult);
       console.warn('typeof this.equalResult', typeof this.equalResult);
@@ -526,17 +432,9 @@ export class Calc {
       // console.log('Число не має десяткової частини з крапкою.');
       return this.limitNumbers
     }
-    // 2222 // 4 - 0 && 0 - 4
-    // 0.22 // 1 - 2 && 2 - 1
-
   }
 
-  
-  
   renderScreen(targetData: MyDOMStringMap) {
-
-    // this.delLastNumber(targetData)
-
     if (this.varOperationResult[0]) {
       this.$primaryScreen.innerHTML = this.addSpacesToNumber(this.varResult[this.varResult.length - 1]);
     }
@@ -556,18 +454,13 @@ export class Calc {
       this.$primaryScreen.innerText = "0";
     }
     
-    
-
     if (this.varOperationResult[0])
-    // this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join("&nbsp<wbr>"); //! === !!!!
-    // this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join("&nbsp<wbr>");
     this.fnLastHistoryScreen().innerHTML = this.varOperationResult.join(" ").replace(/(\d)\s+(\d)/g, '$1&nbsp;$2');
-  //!======
-  if (targetData.equal === '=') {
-    this.renderActionEqualBtn()
-  }
-    this.preLastHistoryLine()
-    
+    //!======
+    if (targetData.equal === '=') {
+      this.renderActionEqualBtn()
+    }
+      this.preLastHistoryLine()
   }
 
   renderActionEqualBtn() {
@@ -621,62 +514,15 @@ export class Calc {
     // console.log('this.$lastOperationsScreen', this.$lastOperationsScreen);
   }
   
-  // qweqweqwe(): NodeListOf<Element> {
-    //   const allHistory: NodeListOf<Element> = document.querySelectorAll("#operations-screen span");
-    //   return allHistory
-    // }
-    
     preLastHistoryLine() {
       const allHistory: NodeListOf<Element> = document.querySelectorAll("#operations-screen span");
-      // // console.error('element111111111111111111111', allHistory[allHistory.length - 1]);
-      // // // console.error('allHistory[allHistory.length - 1]', allHistory[allHistory.length - 1]);
-      
-      // if(allHistory[allHistory.length - 1].contains('resEqual')) {
-        //   allHistory[allHistory.length - 2].classList.add('equal-line')
-        // }
-    allHistory.forEach((item, index) => {
+      allHistory.forEach((item, index) => {
       // console.error('item', item);
-      if (item.classList.contains('res-equal')) {
-        // console.error('============123123========');
-        allHistory[index - 1].classList.add('equal-line')
+        if (item.classList.contains('res-equal')) {
+          // console.error('============123123========');
+          allHistory[index - 1].classList.add('equal-line')
       }
     })
-    //   //   && allHistory[1]
-    //   //   && targetElement.equal === '=' ) {
-    //   //     // console.error('preLastHistoryLine');
-    //   //   // item.classList.add("history")
-
-    //   // allH.classList.add("history")
-
-    //   if (index % 2 === 1) {
-    //     item.classList.add("history"); // Додаємо клас до непарного елемента
-    //   }
-    //   // if(allHistory.length >=2) {
-    //   //   allHistory[index - 2].classList.add("history"); 
-
-    //   // }
-
-
-    //   // allHistory[allHistory.length - 1].classList.remove("history")
-
-    // });
-    // allHistory.forEach((element: Element, idx: number) => {
-    //   // if(allHistory.length >= 2) {
-    //     if (element.classList.contains('resEqual')) {
-    //       // console.error('contains(resEqual)', allHistory[idx - 1]);
-    //       // allHistory[allHistory - 1].styles.color = 'red'
-    //       allHistory[idx - 1].classList.remove('history')
-    //       // element.classList.remove('history')
-    //       if(allHistory[0]) {
-    //         allHistory[0].classList.remove('history')
-    //       }
-    //     }
-      // }
-      // if (allHistory[allHistory.length - 1]) {
-      // }
-      
-    // // console.error('element', allHistory);
-    
   }
 
   clickEqual() {
@@ -688,21 +534,13 @@ export class Calc {
   btnMplus(targetData: MyDOMStringMap) {
     const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
 
-    
-
     const renderMBtn = ()=> {
       if (this.mPlusMemory) {
         this.mPlusMemory = this.fnToFixed(this.mPlusMemory)!
       }
       console.error('this.mPlusMemory', this.mPlusMemory);
-      
-      // $screenM.innerText = this.mPlusMemory + ''
       if (this.mPlusMemory || this.mPlusMemory === 0) {
         $screenM.innerText = this.addSpacesToNumber(`M = ${this.mPlusMemory}`)
-        // $screenM.innerHTML = '<p>123</p>'
-        // $screenM.insertAdjacentHTML('beforeend', `
-        // <p>123</p>
-        // `)
       }
     }
 
@@ -730,9 +568,7 @@ export class Calc {
         renderMBtn()
       }
     }
-    
     btnsmOperations()
-   
   }
 
   mScreenStyles() {
@@ -740,7 +576,7 @@ export class Calc {
 
     const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
 
-     if ($screenM.textContent !== '') {
+    if ($screenM.textContent !== '') {
       $screenM.classList.add(mClass)
     } else if ($screenM.textContent === '') {
       $screenM.classList.remove(mClass)
@@ -797,7 +633,6 @@ export class Calc {
       } else if (num[num.length - 1] === '00') {
         num[num.length - 1] = '0'
       }
-      // if (num[num.length - 1]) {}
       num[num.length - 1] = num[num.length - 1].replace(/^0([1-9])/, '$1').replace(/^-0([1-9])/, '-$1')
     }
     if (/[\.\,]$/.test(num[num.length - 2])) {
@@ -824,8 +659,6 @@ export class Calc {
   }
 
   addSpacesToNumber(nubmerStr: any) {
-    
-    
     let [integerPart, decimalPart] = nubmerStr.split(".");
     integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, " "); //! ставить пробіли "1 234 000.5678"
     integerPart = integerPart.replace(/^[.,]/, '0$&')
@@ -836,7 +669,6 @@ export class Calc {
     || this.lastIndex(nubmerStr.toString()) === ",") {
       formattedStr += ",";
     }
-    
     return formattedStr;
   }
 }
