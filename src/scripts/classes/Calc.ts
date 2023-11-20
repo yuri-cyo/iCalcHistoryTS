@@ -322,6 +322,15 @@ export class Calc {
     this.zeroDot(targetData, this.varResult)
     this.zeroDot(targetData, this.varOperationResult)
     this.addingBrackets()
+    this.zeroDotZeroFix()
+
+  }
+
+  zeroDotZeroFix() {
+    if (this.varOperationResult[1] && /[,\.]0+$/.test(this.varOperationResult[this.varOperationResult.length - 2])) {
+      this.varOperationResult[this.varOperationResult.length - 2] = this.varOperationResult[this.varOperationResult.length - 2].replace(/[,\.]0+$/, '')
+    }
+    
   }
 
   mathOperations() {
