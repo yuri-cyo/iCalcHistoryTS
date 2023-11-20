@@ -3,6 +3,20 @@ import { UI } from "@/scripts/classes/UI";
 
 // ! ==================== UI ==========
 
+
+
+export const scrollDownScreenHistory = () => {
+  return calc.scrollDown()
+}
+
+// ! ==================== Calc ==========
+
+const calc = new Calc("#buttonsCalc", {
+  limitNumbers: 13
+});
+calc
+.clickBtns()
+
 const ui = new UI({
   btn: '[data-equal]',
   btnsContainer: '#buttonsCalc',
@@ -14,16 +28,6 @@ ui
 .autoBorderRadiusInCalc()
 .adaptiveFSScreen()
 .btnsTouch()
-
-// ! ==================== Calc ==========
-
-const calc = new Calc("#buttonsCalc", {
-  limitNumbers: 13
-});
-calc
-.clickBtns()
-
-
 
 const buttonsCalc: HTMLElement = document.querySelector('#buttonsCalc')!
 buttonsCalc.addEventListener('click', () => {

@@ -1,3 +1,5 @@
+import { scrollDownScreenHistory } from '@/scripts/index'
+
 interface UIElems {
   btn: string,
   btnsContainer: string,
@@ -46,6 +48,7 @@ export class UI {
       fontSize += 1;
       this.$primaryScreen.style.fontSize = `${fontSize}px`;
     }
+    scrollDownScreenHistory()
     return this
   }
 

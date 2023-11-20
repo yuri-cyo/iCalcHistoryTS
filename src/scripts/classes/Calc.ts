@@ -412,7 +412,7 @@ export class Calc {
   }
 
   fnToFixed(num: number): number | undefined{
-    if (num) {
+    if (typeof num === 'number') {
       let result: number = +num.toFixed(this.limitNumbers)
       result = +result.toPrecision(this.limitNumbers - 3)
       if (/[\.,]/.test(result+ '')) {
