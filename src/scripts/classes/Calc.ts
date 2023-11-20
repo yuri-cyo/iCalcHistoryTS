@@ -405,14 +405,16 @@ export class Calc {
   fnToFixed(num: number): number | undefined{
     if (num) {
       let result: number = +num.toFixed(this.limitNumbers)
-        .replace(/\.$/, '')
-        .replace(/0+$/, '')
-        
       result = +result.toPrecision(this.limitNumbers - 3)
-        .replace(/0+$/, '')
-        .replace(/[\.,]$/, '')
-        .replace(/0+$/, '')
-        
+      if (/[\.,]/.test(result+ '')) {
+        let resultStr = result+ ''.replace(/\.$/, '').replace(/0+$/, '')
+        result = +resultStr
+        resultStr = result + ''
+          .replace(/0+$/, '')
+          .replace(/[\.,]$/, '')
+          .replace(/0+$/, '')
+        result = +resultStr
+      }
       return result
     }
   }
@@ -521,7 +523,6 @@ export class Calc {
 
   btnMplus(targetData: MyDOMStringMap) {
     const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
-    const time = 0.2
     // $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform ${time}`;
     // $screenM.style.opacity = '0'
     // // $screenM.style.backgroundColor = ""
@@ -532,22 +533,25 @@ export class Calc {
       }
       console.error('this.mPlusMemory', this.mPlusMemory);
       if (this.mPlusMemory || this.mPlusMemory === 0) {
-        $screenM.innerText = this.addSpacesToNumber(`M = ${this.mPlusMemory}`)
+        $screenM.style.opacity = '1'
+        $screenM.innerHTML = this.addSpacesToNumber(`<span>M</span> &nbsp ${this.mPlusMemory}`)
         if ($screenM.innerText !== '') {
           $screenM.style.opacity = '1'
         } else {
           $screenM.style.opacity = '0'
         }
-        $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform ${time}`;
-        $screenM.style.transform = 'scale(1.1)'
-        setTimeout(function () {
-          $screenM.style.backgroundColor = "";
-          $screenM.style.transform = 'scale(1)'
-        }, time * 1000);
+
+        // $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform ${time}`;
+        // $screenM.style.transform = 'scale(1.1)'
+        // setTimeout(function () {
+        //   $screenM.style.backgroundColor = "";
+        //   $screenM.style.transform = 'scale(1)'
+        // }, time * 1000);
       }
     }
 
     const btnsmOperations = ()=> {
+      // if (this.mPlusMemory) this.fnToFixed(this.mPlusMemory)
       if (targetData.m === 'm+') {
         if (this.varResult.length >= 2 && !this.equalResult) {
           this.clickEqual()
@@ -578,22 +582,27 @@ export class Calc {
     const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
     if (targetData.m === 'mc') {
       this.mPlusMemory = null
-      if (this.mPlusMemory === null || this.mPlusMemory === '') {
-        const time = 0.2
-        $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform 0.2s`;
-        $screenM.style.transform = 'scale(1.1)'
-        setTimeout(() => {
-          $screenM.style.opacity = '0';
-          $screenM.style.transform = 'scale(1)'
-        }, 250);
-        // $screenM.addEventListener('transitionend', ()=> {
-        // })
-        setTimeout(() => {
-          $screenM.innerText = ''
-          $screenM.style.transform = 'scale(1)'
+      $screenM.innerText = ''
+      $screenM.style.opacity = '0'
+
+      // if (this.mPlusMemory == null || this.mPlusMemory === '') {
+      //   const time = 0.2
+      //   $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform 0.2s`;
+      //   $screenM.style.transform = 'scale(1.1)'
+      //   setTimeout(() => {
+      //     $screenM.style.opacity = '0';
+      //     $screenM.style.transform = 'scale(1)'
+      //   }, 250);
+      //   // $screenM.addEventListener('transitionend', ()=> {
+      //   // })
+      //   setTimeout(() => {
+      //     $screenM.innerText = ''
+      //     $screenM.style.transform = 'scale(1)'
           
-        }, time + 100 * 1000);
-      }
+      //   }, time + 100 * 1000);
+      // }
+
+
     }
   }
 
