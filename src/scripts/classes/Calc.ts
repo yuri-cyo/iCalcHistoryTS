@@ -21,7 +21,9 @@ export class Calc {
   private symbolsNumRegex: RegExp;
   private symbolsMathRegex: RegExp;
   // private statusAllOperators: boolean[]
-  // private arrAllSymbols: string[]
+  private arrAllSymbols: string[]
+  public additionAndSubtractionOperators: string[]
+  public multiplicationAndDivisionOperators : string[]
   public equalResult: string | null | undefined
   public countHistoryResults: number
   private mPlusMemory: number | null
@@ -42,7 +44,9 @@ export class Calc {
     this.countHistoryResults = 0
     this.symbolsNumRegex = /[0-9.,\-$]/;
     this.symbolsMathRegex = /^[÷×\–+]$/;
-    // this.arrAllSymbols = ["+", "–", "×", '÷]
+    this.additionAndSubtractionOperators = ["+", "–"]
+    this.multiplicationAndDivisionOperators  = ["×", "÷"]
+    this.arrAllSymbols = ["+", "–", "×", "÷"]
     // this.statusAllOperators = [false, false]
     this.mPlusMemory = null
     this.countAC = 0
@@ -142,6 +146,9 @@ export class Calc {
           if (targetData.equal === "=") {
             this.equalLastNum()
           }
+          if (targetData.percent === "%") {
+            this.percentBtn()
+          }
           
           this.allFormatNumberForDisplay(targetData)
           this.btnMplus(targetData)
@@ -165,6 +172,69 @@ export class Calc {
     return this;
   }
 
+  percentBtn() {
+    if (this.varResult[2] !== '') { //! 10, +, 20, %,
+      if (this.additionAndSubtractionOperators.includes(this.varResult[this.varResult.length - 2])) {//! [+ -]
+      this.varResult[this.varResult.length - 1] = +this.varResult[this.varResult.length - 3] / 100 * +this.varResult[this.varResult.length - 1] +''
+      } else if (this.multiplicationAndDivisionOperators.includes(this.varResult[this.varResult.length - 2])) { //! [× ÷]
+        this.varResult[this.varResult.length - 1] = +this.varResult[this.varResult.length - 1] / 100 +''
+      }
+    } 
+
+    if (this.varResult[1] !== '') { //! 10, +, %
+      if (this.additionAndSubtractionOperators.includes(this.varResult[this.varResult.length - 1])) {//! [+ -]
+
+        this.varResult.push(this.varResult[this.varResult.length - 2])
+        this.varOperationResult.push(this.varResult[this.varResult.length - 2])
+
+        this.varResult[this.varResult.length - 1] = +this.varResult[this.varResult.length - 3] / 100 * +this.varResult[this.varResult.length - 1] +''
+        } else if (this.multiplicationAndDivisionOperators.includes(this.varResult[this.varResult.length - 1])) { //! [× ÷]
+
+          this.varResult.push(this.varResult[this.varResult.length - 2])
+          this.varOperationResult.push(this.varResult[this.varResult.length - 2])
+
+          this.varResult[this.varResult.length - 1] = +this.varResult[this.varResult.length - 1] / 100 +''
+        }
+    }
+
+    if (this.varResult.length === 1) { //! 10, +, %
+      if (!this.arrAllSymbols.includes(this.varResult[this.varResult.length - 1])) {//! not[+ - × ÷]
+        console.log('!this.arrAllSymbols.includes(this.varResult[this.varResult.length - 1])) {//! not[+ - × ÷]');
+          this.varResult[this.varResult.length - 1] = +this.varResult[this.varResult.length - 1] / 100+''
+        }
+    }
+    
+    this.varResult[this.varResult.length - 1] = this.fnToFixed(+this.varResult[this.varResult.length - 1])+''
+      // if (this.numA !== '' && this.numB === '') { 
+
+      //     if (this.symbol === '') {
+      //       this.numA = this.fnToFixed(this.numA / 100)
+      //       this.varDigitStr = this.numA
+      //     }
+
+      //     if (this.symbol === '+' || this.symbol === '-') { //! кнопки і операції => 10, + or -, % (this.numB = this.numA / 100 * this.numA)
+      //       this.numB = this.fnToFixed(this.numA / 100 * this.numA)
+      //       this.varDigitStr = this.numB
+      //     }  
+
+      //     if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 10, * or /, % (this.numB = this.numA / 100)
+      //       this.numB = this.fnToFixed(this.numA / 100)
+      //       this.varDigitStr = this.numB
+      //       }
+      // } else if (this.numA !== '' && this.numB !== '') {
+
+      //     if (this.symbol === '+' || this.symbol === '-'){ //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
+      //       this.numB = this.fnToFixed(this.numA / 100 * this.numB)
+      //       this.varDigitStr = this.numB
+      //     }  
+
+      //     if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
+      //       this.numB = this.fnToFixed(this.numB / 100)
+      //       this.varDigitStr = this.numB
+      //     }  
+      // } 
+  }
+  
   errDivisionDero() {
     const errMessage: string = 'Error'
     if (this.equalResult === 'Infinity') {
