@@ -16,18 +16,15 @@ export class Calc {
   // private $historyScreenContainer: HTMLElement
   private $operationsScreen: HTMLElement;
   // private $lastOperationsScreen: HTMLElement;
-  varResult: string[];
-  varOperationResult: string[];
+  public varResult: string[];
+  public varOperationResult: string[];
   private symbolsNumRegex: RegExp;
   private symbolsMathRegex: RegExp;
   // private statusAllOperators: boolean[]
   // private arrAllSymbols: string[]
-  equalResult: string | null | undefined
-  
-  countHistoryResults: number
-
+  public equalResult: string | null | undefined
+  public countHistoryResults: number
   private mPlusMemory: number | null
-
   private countAC: number
   
 
@@ -42,13 +39,10 @@ export class Calc {
     this.varResult = [];
     this.varOperationResult = [];
     this.equalResult = null
-
     this.countHistoryResults = 0
-
     this.symbolsNumRegex = /[0-9.,\-$]/;
     this.symbolsMathRegex = /^[÷×\–+]$/;
     // this.arrAllSymbols = ["+", "–", "×", '÷]
-
     // this.statusAllOperators = [false, false]
     this.mPlusMemory = null
     this.countAC = 0
@@ -86,9 +80,6 @@ export class Calc {
   }
 
   clickBtns() {
-    // const ui = new UI()
-    // ui.btnsTouchNumbers()n
-    // this.btnsTouchNumbers();
     this.$btns?.addEventListener("click", (event: Event) => {
       
       if (event.target) {
@@ -149,8 +140,6 @@ export class Calc {
             }
           }
           if (targetData.equal === "=") {
-            // if (this.varResult.length >= 3 && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
-            // }
             this.equalLastNum()
           }
           
@@ -168,10 +157,8 @@ export class Calc {
           if (this.varResult[0]) {
             this.equalResult = null
           }
-          
           this.errDivisionDero()
           this.scrollDown()
-          
         }
       }
     });
@@ -249,7 +236,7 @@ export class Calc {
     }
   }
 
-  addingBrackets() { //! =======================================================================!!!!!!!!!!!
+  addingBrackets() {
     let lastBracket: string = ''
 
     let status: boolean | undefined
@@ -404,7 +391,6 @@ export class Calc {
     const result = calculate(this.varResult);
 
     if (!isNaN(result!)) {
-      // let resultFixed = result!.toFixed(this.symbolsToDot(result!)).replace(/0+$/, '').replace(/\.$/, '')
       let resultFixed = this.fnToFixed(result!) + ''
       this.equalResult = resultFixed
       console.warn('this.equalResult', this.equalResult);
@@ -418,7 +404,6 @@ export class Calc {
 
   fnToFixed(num: number): number | undefined{
     if (num) {
-      // return +num.toFixed(this.symbolsToDot(num!)).replace(/0+$/, '').replace(/\.$/, '')
       let result: number = +num.toFixed(this.limitNumbers)
         .replace(/\.$/, '')
         .replace(/0+$/, '')
@@ -465,7 +450,6 @@ export class Calc {
       //!=====================================
 
     } else if (!this.varResult[0]) {
-      // $historyScreenContainer.innerText = "0";
       this.$primaryScreen.innerText = "0";
     }
     
@@ -483,14 +467,9 @@ export class Calc {
     && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])
     && this.varResult) {
       this.countHistoryResults += 1
-      // this.$operationsScreen.appendChild(document.createElement("span"))
-      // console.warn('=====================================');
-      // console.warn('this.varResult', this.varResult);
-      // <span class="equal-line"></span> //!
+
       this.mathOperations()
       if (this.equalResult === 'Infinity') {
-        // this.equalResult = '0'
-        // this.errDivisionDero()
 
         this.$operationsScreen.insertAdjacentHTML('beforeend', 
         `
@@ -509,7 +488,6 @@ export class Calc {
       </span>`)
       if (this.equalResult === 'Infinity') {
         this.$primaryScreen.innerText = this.equalResult
-        // this.equalResult = '0'
       } else {
         this.$primaryScreen.innerText = this.addSpacesToNumber(this.equalResult)
 
@@ -518,23 +496,18 @@ export class Calc {
       this.scrollDown()
   
       this.varResult = [];
-      // this.varResult.push(this.addSpacesToNumber(this.mathOperations()))
       this.varOperationResult = [];
     }
   }
 
   scrollDown() {
     this.$operationsScreen.scrollTo(0, document.body.scrollHeight)
-    // this.$lastOperationsScreen.scrollIntoView({ behavior: 'smooth' })
-    // console.log('this.$lastOperationsScreen', this.$lastOperationsScreen);
   }
   
     preLastHistoryLine() {
       const allHistory: NodeListOf<Element> = document.querySelectorAll("#operations-screen span");
       allHistory.forEach((item, index) => {
-      // console.error('item', item);
         if (item.classList.contains('res-equal')) {
-          // console.error('============123123========');
           allHistory[index - 1].classList.add('equal-line')
       }
     })
@@ -548,6 +521,10 @@ export class Calc {
 
   btnMplus(targetData: MyDOMStringMap) {
     const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
+    const time = 0.2
+    // $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform ${time}`;
+    // $screenM.style.opacity = '0'
+    // // $screenM.style.backgroundColor = ""
 
     const renderMBtn = ()=> {
       if (this.mPlusMemory) {
@@ -556,6 +533,17 @@ export class Calc {
       console.error('this.mPlusMemory', this.mPlusMemory);
       if (this.mPlusMemory || this.mPlusMemory === 0) {
         $screenM.innerText = this.addSpacesToNumber(`M = ${this.mPlusMemory}`)
+        if ($screenM.innerText !== '') {
+          $screenM.style.opacity = '1'
+        } else {
+          $screenM.style.opacity = '0'
+        }
+        $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform ${time}`;
+        $screenM.style.transform = 'scale(1.1)'
+        setTimeout(function () {
+          $screenM.style.backgroundColor = "";
+          $screenM.style.transform = 'scale(1)'
+        }, time * 1000);
       }
     }
 
@@ -586,24 +574,25 @@ export class Calc {
     btnsmOperations()
   }
 
-  mScreenStyles() {
-    const mClass = 'm-sceen-on'
-
-    const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
-
-    if ($screenM.textContent !== '') {
-      $screenM.classList.add(mClass)
-    } else if ($screenM.textContent === '') {
-      $screenM.classList.remove(mClass)
-    }
-  }
-
   mClear(targetData: MyDOMStringMap) {
     const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
     if (targetData.m === 'mc') {
       this.mPlusMemory = null
       if (this.mPlusMemory === null || this.mPlusMemory === '') {
-        $screenM.innerText = ''
+        const time = 0.2
+        $screenM.style.transition = `background-color ${time}s, opacity ${time}s, transform 0.2s`;
+        $screenM.style.transform = 'scale(1.1)'
+        setTimeout(() => {
+          $screenM.style.opacity = '0';
+          $screenM.style.transform = 'scale(1)'
+        }, 250);
+        // $screenM.addEventListener('transitionend', ()=> {
+        // })
+        setTimeout(() => {
+          $screenM.innerText = ''
+          $screenM.style.transform = 'scale(1)'
+          
+        }, time + 100 * 1000);
       }
     }
   }
@@ -626,6 +615,20 @@ export class Calc {
     }
     this.renderScreen(targetData)
   }
+
+  mScreenStyles() {
+    const mClass = 'm-sceen-on'
+
+    const $screenM: HTMLElement = document.querySelector('.calc__m-screen')!
+
+    if ($screenM.textContent !== '') {
+      $screenM.classList.add(mClass)
+    } else if ($screenM.textContent === '') {
+      $screenM.classList.remove(mClass)
+    }
+  }
+
+ 
 
   lastNumInResult(): string {
     let res: string = "";

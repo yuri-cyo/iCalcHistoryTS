@@ -222,6 +222,7 @@ header {
 			align-items: center;
 			color: $bg-calc;
 			font-weight: 600;
+			transition: background-color 0.2s ease 0s, opacity 0.2s ease 0s, transform 0.2s ease 0s;
 			// border-radius: 2rem;
 			// background-color: $btn-math;
 			// background-color: #fea00a9f;

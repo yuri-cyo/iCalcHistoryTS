@@ -50,19 +50,18 @@ export class UI {
   }
 
   btnsTouch() {
-    document.body.addEventListener(
-      "touchstart",
-      (e: any) => {
-        if (e.target.className.includes("button")) {
+        this.$btnsContainer.addEventListener("touchstart", (e: TouchEvent) => {
+          const eTarget = e.target as HTMLElement;
+        if (eTarget.className.includes("button")) {
           //! Android Vibration
-          if (e.target.closest(".button")) {
-            if ("vibrate" in navigator) {
+          if (eTarget.closest(".button")) {
+            if (navigator.vibrate) {
               navigator.vibrate(75);
             }
           }
         }
         let touchColor = "";
-        let className = e.target.className;
+        let className = eTarget.className;
         if (className.includes("button__m")) {
           touchColor = "#737371";
         }
@@ -75,20 +74,21 @@ export class UI {
         if (className.includes("button__math")) {
           touchColor = "#F3C895";
         }
-        e.target.style.backgroundColor = touchColor;
-        e.target.style.transition =
+        eTarget.style.backgroundColor = touchColor;
+        eTarget.style.transition =
           "background-color 0s, opacity 0.5s, transform 0.2s";
       },
       false
     );
-    document.body.addEventListener(
+    
+    this.$btnsContainer.addEventListener(
       "touchend",
-      function (e: any) {
-        // let className = e.target.className;
-        e.target.style.transition =
+      function (e: TouchEvent) {
+        const eTarget = e.target as HTMLElement;
+        eTarget.style.transition =
           "background-color 0.5s, opacity 0.5s, transform 0.2s";
         setTimeout(function () {
-          e.target.style.backgroundColor = "";
+          eTarget.style.backgroundColor = "";
         }, 20);
       },
       false

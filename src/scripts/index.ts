@@ -12,6 +12,8 @@ const ui = new UI({
 });
 ui
 .autoBorderRadiusInCalc()
+.adaptiveFSScreen()
+.btnsTouch()
 
 // ! ==================== Calc ==========
 
