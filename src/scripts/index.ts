@@ -9,6 +9,10 @@ export const scrollDownScreenHistory = () => {
   return calc.scrollDown()
 }
 
+export const varResult = () => {
+  return calc.varResult
+}
+
 // ! ==================== Calc ==========
 
 const calc = new Calc("#buttonsCalc", {
@@ -19,15 +23,18 @@ calc
 
 const ui = new UI({
   btn: '[data-equal]',
+  btnsMath: '[data-math]',
   btnsContainer: '#buttonsCalc',
   container: '.calc',
   screenContainer: '.calc__screen',
   primaryScreen: '#primary-screen',
+  arrAllSymbols: calc.arrAllSymbols
 });
 ui
 .autoBorderRadiusInCalc()
 .adaptiveFSScreen()
 .btnsTouch()
+ui.activeMathBtns()
 
 const buttonsCalc: HTMLElement = document.querySelector('#buttonsCalc')!
 buttonsCalc.addEventListener('click', () => {

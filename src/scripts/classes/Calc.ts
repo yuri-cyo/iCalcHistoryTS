@@ -9,25 +9,26 @@ interface MyDOMStringMap {
 }
 
 export class Calc {
-  private $btns: HTMLElement;
-  private limitNumbers: number;
+  public $btns: HTMLElement;
+  public limitNumbers: number;
 
-  private $primaryScreen: HTMLElement;
+  public $primaryScreen: HTMLElement;
   // private $historyScreenContainer: HTMLElement
-  private $operationsScreen: HTMLElement;
+  public $operationsScreen: HTMLElement;
   // private $lastOperationsScreen: HTMLElement;
   public varResult: string[];
   public varOperationResult: string[];
-  private symbolsNumRegex: RegExp;
-  private symbolsMathRegex: RegExp;
+  public symbolsNumRegex: RegExp;
+  public symbolsMathRegex: RegExp;
   // private statusAllOperators: boolean[]
-  private arrAllSymbols: string[]
+  public arrAllSymbols: string[]
   public additionAndSubtractionOperators: string[]
   public multiplicationAndDivisionOperators : string[]
   public equalResult: string | null | undefined
   public countHistoryResults: number
-  private mPlusMemory: number | null
-  private countAC: number
+  public mPlusMemory: number | null
+  public countAC: number
+  public lastResult: null | string
   
 
   constructor(selector: string, options: Options) {
@@ -50,6 +51,8 @@ export class Calc {
     // this.statusAllOperators = [false, false]
     this.mPlusMemory = null
     this.countAC = 0
+
+    this.lastResult = ''
   }
 
   fnLastHistoryScreen(): HTMLElement {
@@ -205,34 +208,6 @@ export class Calc {
     }
     
     this.varResult[this.varResult.length - 1] = this.fnToFixed(+this.varResult[this.varResult.length - 1])+''
-      // if (this.numA !== '' && this.numB === '') { 
-
-      //     if (this.symbol === '') {
-      //       this.numA = this.fnToFixed(this.numA / 100)
-      //       this.varDigitStr = this.numA
-      //     }
-
-      //     if (this.symbol === '+' || this.symbol === '-') { //! кнопки і операції => 10, + or -, % (this.numB = this.numA / 100 * this.numA)
-      //       this.numB = this.fnToFixed(this.numA / 100 * this.numA)
-      //       this.varDigitStr = this.numB
-      //     }  
-
-      //     if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 10, * or /, % (this.numB = this.numA / 100)
-      //       this.numB = this.fnToFixed(this.numA / 100)
-      //       this.varDigitStr = this.numB
-      //       }
-      // } else if (this.numA !== '' && this.numB !== '') {
-
-      //     if (this.symbol === '+' || this.symbol === '-'){ //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
-      //       this.numB = this.fnToFixed(this.numA / 100 * this.numB)
-      //       this.varDigitStr = this.numB
-      //     }  
-
-      //     if (this.symbol === '*' || this.symbol === '/') { //! кнопки і операції => 50, + or -, 20, % (this.numB = this.numA / 100 * this.numB)
-      //       this.numB = this.fnToFixed(this.numB / 100)
-      //       this.varDigitStr = this.numB
-      //     }  
-      // } 
   }
   
   errDivisionDero() {
@@ -516,9 +491,21 @@ export class Calc {
   }
 
   renderScreen(targetData: MyDOMStringMap) {
-    if (this.varOperationResult[0]) {
+    if (this.varResult.length >= 3 
+      && this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
+        this.lastResult = this.mathOperations()!
+    } 
+    console.error('lastResultlastResult', this.lastResult);
+    if (this.varOperationResult[0] 
+      // && this.varOperationResult.length <= 2
+      ) {
+      // this.$primaryScreen.innerHTML = this.varOperationResult[this.varOperationResult.length - 1]
       this.$primaryScreen.innerHTML = this.addSpacesToNumber(this.varResult[this.varResult.length - 1]);
-    }
+      if (this.varOperationResult.length >= 3 
+          && this.symbolsMathRegex.test(this.$primaryScreen.innerHTML)) {
+        this.$primaryScreen.innerHTML = this.addSpacesToNumber(this.lastResult!)
+      }
+    } 
     
     if (this.symbolsNumRegex.test(this.varResult[this.varResult.length - 1])) {
 
@@ -613,7 +600,7 @@ export class Calc {
       console.error('this.mPlusMemory', this.mPlusMemory);
       if (this.mPlusMemory || this.mPlusMemory === 0) {
         $screenM.style.opacity = '1'
-        $screenM.innerHTML = this.addSpacesToNumber(`<span>M</span> &nbsp ${this.mPlusMemory}`)
+        $screenM.innerHTML = this.addSpacesToNumber(`<span>M =</span> &nbsp ${this.mPlusMemory}`)
         if ($screenM.innerText !== '') {
           $screenM.style.opacity = '1'
         } else {

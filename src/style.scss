@@ -220,16 +220,16 @@ header {
 			// background-color: $btn-control-hover;
 			justify-content:center;
 			align-items: center;
-			color: $bg-calc;
+			color: $btn-control-hover;
 			font-weight: 600;
-			box-shadow: #8f8e8e -2px -2px 5px, #eeeeee 1px 1px 5px;
+			// box-shadow: #8f8e8e -2px -2px 5px, #eeeeee 1px 1px 5px;
 			// transition: background-color 0.2s ease 0s, opacity 0.2s ease 0s, transform 0.2s ease 0s; //! ANIMATION M+
 			// border-radius: 2rem;
 			// background-color: $btn-math;
 			// background-color: #fea00a9f;
 
 			padding-right: 0.6rem;
-			padding-left: 2px;
+			padding-left: 0.6rem;
 			padding-top: 2px;
 			padding-bottom: 2px;
 			// filter: blur(10px);
@@ -239,17 +239,18 @@ header {
 			// margin: 0 auto;
 			opacity: 0;
 			span {
-				background-color: $btn-math;
-				color: #373737;
+				// background-color: $btn-math;
+				white-space: nowrap;
+				color: $btn-control-hover;
 				// text-shadow: #000000 0px 0px 5px;
 				border-radius: 100px;
 				// padding: 2px;
 				height: 1.5rem;
-				aspect-ratio: 1/1;
+				// aspect-ratio: 1/1;
 				display: flex;
 				justify-content:center;align-items: center;
 				text-align: center;
-				box-shadow: #6c6c6c 0px 0px 5px;
+				// box-shadow: #6c6c6c 0px 0px 5px;
 			}
 		}
 	}
@@ -266,7 +267,7 @@ header {
 	// }
 
 	.m-sceen-on {
-		background-color: $btn-control-hover;
+		background-color: $btn-numbers;
 	}
 
 	// &__m-screen {
