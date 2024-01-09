@@ -99,7 +99,14 @@ $transition-btn: .7s;
 $pd-content: $gap;
 
 
-
+// @media screen and (orientation: landscape) {
+// 	.wrapper {
+// 	  transform: rotate(-90deg);
+// 	//   width: 100vw;
+// 	//   height: 100vh;
+// 	//   height: 100vh;
+// 	}
+//   }
 /* Стилізація скролбара */
 /* Для WebKit браузерів, таких як Chrome та Safari */
 

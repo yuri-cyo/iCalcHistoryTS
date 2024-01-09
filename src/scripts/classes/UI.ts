@@ -66,7 +66,7 @@ export class UI{
           //! Android Vibration
           if (eTarget.closest(".button")) {
             if (navigator.vibrate) {
-              navigator.vibrate(75);
+              navigator.vibrate(50);
             }
           }
         }
