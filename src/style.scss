@@ -429,13 +429,13 @@ header {
 		background-color: $btn-m;
 		
 
-		@media (hover: hover){
-			&:hover {
-				background-color: $btn-numbers-hover;
-				filter: brightness(80%);
-				transition: 0s ease;
-			}
-		}
+		// @media (hover: hover){
+		// 	&:hover {
+		// 		background-color: $btn-numbers-hover;
+		// 		filter: brightness(80%);
+		// 		transition: 0s ease;
+		// 	}
+		// }
 	}
 
 	&__control {
@@ -446,12 +446,12 @@ header {
 		font-weight: $fw-control-button;
 		touch-action: none;
 		
-		@media (hover: hover){
-			&:hover {
-				background-color: $btn-control-hover;
-				transition: 0s ease;
-			}
-		}
+		// @media (hover: hover){
+		// 	&:hover {
+		// 		background-color: $btn-control-hover;
+		// 		transition: 0s ease;
+		// 	}
+		// }
 	
 		// &:active {
 		// 	// filter: brightness(80%);
@@ -469,13 +469,13 @@ header {
 		transition: $transition-btn ease all;
 		// transition: 0s all ease;
 	
-		@media (hover: hover){
-			&:hover {
-				background-color: $btn-numbers-hover;
-				filter: brightness(80%);
-				transition: 0s ease;
-			}
-		}
+		// @media (hover: hover){
+		// 	&:hover {
+		// 		background-color: $btn-numbers-hover;
+		// 		filter: brightness(80%);
+		// 		transition: 0s ease;
+		// 	}
+		// }
 		
 		// &:active {
 		// 	// transition: .5s all ease;
@@ -491,12 +491,12 @@ header {
 		font-size: $fs-math-button;
 		font-weight: $fw-math-button;
 	
-		@media (hover: hover){
-			&:hover {
-				background-color: $btn-math-hover;
-				transition: 0s ease;
-			}
-		}
+		// @media (hover: hover){
+		// 	&:hover {
+		// 		background-color: $btn-math-hover;
+		// 		transition: 0s ease;
+		// 	}
+		// }
 		// &:active {
 		// 	background-color: $btn-math-active;
 		// 	color: #FEA00A;
@@ -517,8 +517,8 @@ header {
 	}
 	
 	&__math-active {
-		color: #FEA00A;
-		background-color: $btn-math-click;
+		color: #FEA00A !important;
+		background-color: $btn-math-click !important;
 	}
 	
 	&__zero {
@@ -539,5 +539,7 @@ header {
 	background-position: center;
 	background-size: 35px 35px;
 }
+
+
 
 

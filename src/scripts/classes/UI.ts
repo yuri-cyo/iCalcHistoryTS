@@ -60,62 +60,69 @@ export class UI{
   }
 
   btnsTouch() {
-        this.$btnsContainer.addEventListener("touchstart", (e: TouchEvent) => {
-          const eTarget = e.target as HTMLElement;
-        if (eTarget.className.includes("button")) {
-          //! Android Vibration
-          if (eTarget.closest(".button")) {
-            if (navigator.vibrate) {
-              navigator.vibrate(50);
-            }
+    function activeOn(eTarget: HTMLElement) {
+      
+      let touchColor = "";
+      let className = eTarget.className;
+      if (className.includes("button__m")) {
+        touchColor = "#737371";
+      }
+      if (className.includes("button__control")) {
+        touchColor = "#D9D9D9";
+      }
+      if (className.includes("button__number")) {
+        touchColor = "#737373";
+      }
+      if (className.includes("button__math")) {
+        touchColor = "#F3C895";
+      }
+      eTarget.style.backgroundColor = touchColor;
+      eTarget.style.transition =
+      "background-color 0s, opacity 0.5s, transform 0.2s";
+    }
+    function activeOut(eTarget: HTMLElement) {
+      eTarget.style.transition =
+      "background-color 0.5s, opacity 0.5s, transform 0.2s";
+    setTimeout(function () {
+      eTarget.style.backgroundColor = "";
+      // eTarget.style.color = "";
+    }, 20);
+    }
+    this.$btnsContainer.addEventListener("touchstart", (e: TouchEvent) => {
+      const eTarget = e.target as HTMLElement;
+
+      if (eTarget.className.includes("button")) {
+        //! Android Vibration
+        if (eTarget.closest(".button")) {
+          if (navigator.vibrate) {
+            navigator.vibrate(50);
           }
         }
-        let touchColor = "";
-        let className = eTarget.className;
-        if (className.includes("button__m")) {
-          touchColor = "#737371";
-        }
-        if (className.includes("button__control")) {
-          touchColor = "#D9D9D9";
-        }
-        if (className.includes("button__number")) {
-          touchColor = "#737373";
-        }
-        if (className.includes("button__math")) {
-          touchColor = "#F3C895";
-        }
-        eTarget.style.backgroundColor = touchColor;
-        eTarget.style.transition =
-          "background-color 0s, opacity 0.5s, transform 0.2s";
+      }
+      activeOn(eTarget)
       },
       false
     );
+
+    this.$btnsContainer.addEventListener('mousedown', (e:Event)=> {
+      const eTarget = e.target as HTMLElement;
+      activeOn(eTarget)
+    })
+    this.$btnsContainer.addEventListener('mouseup', (e:Event)=> {
+      const eTarget = e.target as HTMLElement;
+      activeOut(eTarget)
+    })
     
-    this.$btnsContainer.addEventListener(
-      "touchend",
-      function (e: TouchEvent) {
+    this.$btnsContainer.addEventListener("touchend", function (e: TouchEvent) {
         const eTarget = e.target as HTMLElement;
-        eTarget.style.transition =
-          "background-color 0.5s, opacity 0.5s, transform 0.2s";
-        setTimeout(function () {
-          eTarget.style.backgroundColor = "";
-        }, 20);
+        activeOut(eTarget)
       },
       false
     );
   }
   activeMathBtns() {
     const mathBtns = document.querySelectorAll('[data-math]')
-    let bgActive = '#ffff'
-    let colorActive = '#FEA00A'
-    // const bgActive = '#FEA00A'
-    // const colorActive = getComputedStyle(equalBtn).color
-    // // let cl = getComputedStyle(mathBtns[0]).color
-    // console.log('varResult()varResult()', colorActive);
-    
-    
-    // const defaultColorBtn = '#13123'
-    // const defaultBgBtn = '#ccc'
+
     console.log('mathBtnsmathBtns', getComputedStyle(mathBtns[0]).backgroundColor);
     this.$btnsContainer.addEventListener('click', (event:Event)=> {
 
@@ -127,26 +134,18 @@ export class UI{
 
         function runDefaultStyleBtn() {
           mathBtns.forEach((elem: any)=> {
-            elem.style.backgroundColor = colorActive
-            elem.style.color = bgActive
+            elem.classList.remove('button__math-active')
           })
         }
         
         if (targetElement.closest(".button")) {
           if (targetData.math) {
             if (varResult().length > 1 
-            // && varResult()[varResult().length - 1] === '+'
             && this.arrAllSymbols.includes(varResult()[varResult().length - 1])
             ) {
               runDefaultStyleBtn()
-              // targetElement.style.backgroundColor = defaultColorBtn
-              // targetElement.style.color = targetElement.style.backgroundColor
-              targetElement.style.color = colorActive
-              targetElement.style.backgroundColor = bgActive
-              
-            } else {
-              // targetElement.style.backgroundColor = defaultColorBtn
-            }
+              targetElement.classList.add('button__math-active')
+            } 
           }
           if (!this.arrAllSymbols.includes(varResult()[varResult().length - 1])) {
             runDefaultStyleBtn()
@@ -157,13 +156,5 @@ export class UI{
         }
       }
     })
-
-    
-    // if (varResult().length >= 1
-    // // && ['+'].includes.varResult[varResult.length - 1]
-    // ) {
-      
-    // }
-    // return this
   }
 }
