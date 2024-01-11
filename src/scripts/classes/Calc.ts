@@ -459,7 +459,7 @@ export class Calc {
   fnToFixed(num: number): number | undefined{
     if (typeof num === 'number') {
       let result: number = +num.toFixed(this.limitNumbers)
-      result = +result.toPrecision(this.limitNumbers - 3)
+      result = +result.toPrecision(this.limitNumbers + 4)
       if (/[\.,]/.test(result+ '')) {
         let resultStr = result+ ''.replace(/\.$/, '').replace(/0+$/, '')
         result = +resultStr
